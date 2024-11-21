@@ -29,7 +29,8 @@ export class Trial extends TimelineNode {
         });
     }
     finish(data: TrialResult) {
-        JsPsych.instance.plugin.timer.clearAllTimer();
+        JsPsych.plugin.timer.clearAllTimer();
+        JsPsych.plugin.keyboard.removeAllListener();
         render(null, this.parent.getDisplayDom());
         nextTick(() => {
             this.trial_finish_time = JsPsych.instance.currTime;

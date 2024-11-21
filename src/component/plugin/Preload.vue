@@ -25,7 +25,7 @@ onMounted(() => {
         cbi.init();
         loader.startLoad();
 
-        JsPsych.instance.plugin.timer.setInterval(() => {
+        JsPsych.plugin.timer.setInterval(() => {
             if (cbi.isInit && loader.isFinish) {
                 end();
             } else {

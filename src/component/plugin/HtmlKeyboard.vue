@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { JsPsych } from '../../utils/jsPsych/jsPsych';
 
 const props = defineProps({
@@ -25,18 +25,19 @@ const props = defineProps({
     }
 });
 
-const keyboard = (e: KeyboardEvent) => {
-    const time = JsPsych.instance.currTime;
+const keyboard = (e: KeyboardEvent, time: number) => {
+    const key = JsPsych.plugin.keyboard.transforCaseToLower(e.key);
     if(props.choices.indexOf("NO_KEYS") >= 0) { return 0; }
-    if(props.choices.indexOf("ALL_KEYS") >= 0 || props.choices.indexOf(e.key) >= 0) {
+    if(props.choices.indexOf("ALL_KEYS") >= 0 || props.choices.indexOf(key) >= 0) {
         const result = {
             rt: JsPsych.instance.currTrial.getIntervalTime(time),
-            response: e.key,
+            response: key,
             stimulus: props.stimulus
         };
         end(false, result);
     }
 };
+JsPsych.plugin.keyboard.addListener(keyboard);
 const end = (timer = false, result = {}) => {
     const data = {
         trial_type: "html-keyboard",
@@ -53,21 +54,16 @@ const end = (timer = false, result = {}) => {
 const dom = ref<HTMLDivElement>();
 onMounted(() => {
     if (props.trial_duration_time > 0) {
-        JsPsych.instance.plugin.timer.setTimeout(() => {
+        JsPsych.plugin.timer.setTimeout(() => {
             end(true);
         }, props.trial_duration_time);
     }
     if (props.stimulus_duration > 0) {
-        JsPsych.instance.plugin.timer.setTimeout(() => {
+        JsPsych.plugin.timer.setTimeout(() => {
             dom.value?.classList.add("hidden");
             dom.value?.attributes.setNamedItem(document.createAttribute("hidden"));
         }, props.stimulus_duration);
     }
-
-    document.documentElement.addEventListener("keydown", keyboard);
-});
-onUnmounted(() => {
-    document.documentElement.removeEventListener("keydown", keyboard);
 });
 </script>
 

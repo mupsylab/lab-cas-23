@@ -1,22 +1,21 @@
 import { Data } from "./module/data";
-import { TimerAPI } from "./module/plugin-api";
+import { KeyboardListenerAPI, TimerAPI } from "./module/plugin-api";
 import { TimelineArray, TimelineDescription } from "./timeline";
 import { Timeline } from "./timeline/Timeline";
 
 export class JsPsych {
     private static only_instance: JsPsych | undefined;
-    private timeline: Timeline;
-    public plugin: {
-        timer: TimerAPI;
+    public static plugin = {
+        timer: new TimerAPI(),
+        keyboard: new KeyboardListenerAPI()
     };
+    private timeline: Timeline;
     public data: Data = new Data();
 
     constructor() {
         this.data.reset();
-        this.plugin = {
-            timer: new TimerAPI()
-        }
         this.timeline = new Timeline([], document.documentElement);
+        JsPsych.plugin.keyboard.registerListener();
     }
     load(timeline: TimelineDescription | TimelineArray, dom: HTMLElement) {
         this.timeline = new Timeline(timeline, dom);

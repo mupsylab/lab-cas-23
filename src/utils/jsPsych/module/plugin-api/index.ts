@@ -1,3 +1,4 @@
+import { KeyboardListenerAPI } from "./KeyboardListenerAPI";
 import { TimerAPI } from "./TimerAPI"
 
-export { TimerAPI };
+export { TimerAPI, KeyboardListenerAPI };

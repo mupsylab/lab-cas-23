@@ -20,7 +20,9 @@ timeline.push({
         assets: [
             "./assets/logo/logo.svg",
             "./assets/logo/logo_64_64.png",
-            "./assets/logo/logo_128_128.png"
+            "./assets/logo/logo_128_128.png",
+            "./assets/logo/logo_256_256.png",
+            "./assets/logo/logo_512_512.png"
         ]
     })
 });
@@ -31,6 +33,12 @@ timeline.push({
             stimulus: "+",
             stimulus_duration: 500,
             trial_duration_time: 1000,
+        })
+    }
+}, {
+    component() {
+        return h(HtmlKeyboard, {
+            stimulus: "666"
         })
     }
 }, {
