@@ -6,7 +6,9 @@ import { Timeline } from "./timeline/Timeline";
 export class JsPsych {
     private static only_instance: JsPsych | undefined;
     private timeline: Timeline;
-    public plugin: { timer: TimerAPI; };
+    public plugin: {
+        timer: TimerAPI;
+    };
     public data: Data = new Data();
 
     constructor() {
@@ -27,6 +29,9 @@ export class JsPsych {
     }
     get currTrial() {
         return this.timeline.getActivateTrial();
+    }
+    get currTime() {
+        return new Date().getTime();
     }
     static get instance() {
         if (JsPsych.only_instance === undefined) JsPsych.only_instance = new JsPsych();

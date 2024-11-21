@@ -27,7 +27,6 @@ onMounted(() => {
 
         JsPsych.instance.plugin.timer.setInterval(() => {
             if (cbi.isInit && loader.isFinish) {
-                JsPsych.instance.plugin.timer.clearAllTimer();
                 end();
             } else {
                 const { len, left, loading } = loader.progress;

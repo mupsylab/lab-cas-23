@@ -35,9 +35,16 @@ export class Timeline extends TimelineNode {
         this.cursor_node = 0;
         this.cursor_variable = 0;
         this.cursor_repetition = 0;
+
+        for(const childNode of this.childNodes) {
+            if (childNode instanceof Timeline) {
+                childNode.reset();
+            }
+        }
+        this.status = TimelineNodeStatus.RUNNING;
     }
     run() {
-        if(this.status === TimelineNodeStatus.COMPLETED) return 0;
+        if(this.status !== TimelineNodeStatus.RUNNING) return 0;
         const { conditional_function} = this.description;
         if (!conditional_function || conditional_function()) {
             if (this.description.on_timeline_start) this.description.on_timeline_start();
@@ -48,13 +55,13 @@ export class Timeline extends TimelineNode {
         }
     }
     next() {
-        if(this.status === TimelineNodeStatus.COMPLETED) return 0;
+        if(this.status !== TimelineNodeStatus.RUNNING) return 0;
         const { loop_function, repetitions = 1 } = this.description;
         if(this.childNodes[this.cursor_node] instanceof Timeline) {
             // 如果子节点也是timeline, 则需要先跑完子节点的时间线
             const childNode = this.childNodes[this.cursor_node] as Timeline;
             childNode.next();
-            if(childNode.getStatus() != TimelineNodeStatus.COMPLETED) return 0;
+            if(childNode.getStatus() === TimelineNodeStatus.RUNNING) return 0;
         }
         this.cursor_node += 1;
         if(this.cursor_node >= this.childNodes.length) {
@@ -147,11 +154,9 @@ export class Timeline extends TimelineNode {
         return order;
     }
     public getAllTimelineVariables(): Record<string, any> {
-        if(this.cursor_variable < 0) return {};
-        if(!this.description.timeline_variables) return {};
         return {
             ...this.parent instanceof Timeline ? this.parent.getAllTimelineVariables() : {},
-            ...this.description.timeline_variables[this.cursor_variable]
+            ...this.description.timeline_variables ? this.description.timeline_variables[this.cursor_variable] : {}
         };
     }
 }

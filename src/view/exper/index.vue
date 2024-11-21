@@ -10,6 +10,7 @@ import { TimelineArray } from '../../utils/jsPsych/timeline';
 import Preload from '../../component/plugin/Preload.vue';
 import EndExp from '../../component/endExp.vue';
 import Survey from '../../component/plugin/Survey.vue';
+import HtmlKeyboard from '../../component/plugin/HtmlKeyboard.vue';
 
 const jspsych = JsPsych.instance;
 const timeline: TimelineArray = [];
@@ -26,10 +27,21 @@ timeline.push({
 
 timeline.push({
     component() {
+        return h(HtmlKeyboard, {
+            stimulus: "+",
+            stimulus_duration: 500,
+            trial_duration_time: 1000,
+        })
+    }
+}, {
+    component() {
         return h(Survey)
     },
     on_start(trial) {
         console.log(trial.parent?.getAllTimelineVariables());
+    },
+    on_load(component) {
+        console.log(component);
     },
     on_finish(data) {
         console.log(data)

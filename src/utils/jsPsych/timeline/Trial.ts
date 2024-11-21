@@ -20,30 +20,33 @@ export class Trial extends TimelineNode {
     }
 
     run() {
-        if(this.description.on_start) this.description.on_start(this);
+        if (this.description.on_start) this.description.on_start(this);
         const component: VNode = typeof this.description.component === "function" ? this.description.component(this) : this.description.component;
         render(component, this.parent.getDisplayDom());
         nextTick(() => {
-            this.trial_start_time = performance.now()
-            if(this.description.on_load) this.description.on_load(component);
+            this.trial_start_time = JsPsych.instance.currTime;
+            if (this.description.on_load) this.description.on_load(component);
         });
     }
     finish(data: TrialResult) {
+        JsPsych.instance.plugin.timer.clearAllTimer();
         render(null, this.parent.getDisplayDom());
         nextTick(() => {
-            this.trial_finish_time = performance.now();
-            if(this.description.on_finish) this.description.on_finish(data);
-            const dd = Object.assign({}, {
+            this.trial_finish_time = JsPsych.instance.currTime;
+            Object.assign(data, {
                 trial_id: this.getCurrId(),
                 trial_start_time: this.trial_start_time,
                 trial_finish_time: this.trial_finish_time
-            }, data);
-            this.write(dd);
-            JsPsych.instance.data.write(dd);
+            });
+            if (this.description.on_finish) this.description.on_finish(data);
+            this.write(data);
         });
 
         this.parent.getTopTimeline().next();
         this.parent.getTopTimeline().run();
+    }
+    getIntervalTime(time: number) {
+        return time - this.trial_start_time;
     }
     getCurrId() {
         return `${this.parent.getCurrId()}-${this.id}`
@@ -53,5 +56,6 @@ export class Trial extends TimelineNode {
     }
     write(data: TrialResult) {
         this.results.push(data);
+        JsPsych.instance.data.write(data);
     }
 }

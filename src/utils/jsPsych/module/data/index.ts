@@ -20,6 +20,7 @@ export class Data {
         return this.results;
     }
     write(data_obj: BaseDictionary) {
+        Object.assign(data_obj, this.dataProperties);
         this.results.push(data_obj);
     }
     addProperties(properties: BaseDictionary) {
@@ -35,12 +36,10 @@ export class Data {
         }
         return this.queryString;
     }
-
-
     getURLVariable(whichvar: string | number) {
         return this.urlVariables()[whichvar];
     }
-    getData(format = "json") {
+    getDisplayData(format = "json") {
         format = format.toLowerCase();
         if (format !== "json" && format !== "csv") {
             console.log("Invalid format declared for displayData function. Using json as default.");
