@@ -37,12 +37,6 @@ timeline.push({
     }
 }, {
     component() {
-        return h(HtmlKeyboard, {
-            stimulus: "666"
-        })
-    }
-}, {
-    component() {
         return h(Survey)
     },
     on_start(trial) {

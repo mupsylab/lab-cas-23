@@ -45,12 +45,42 @@ interface DateQues extends BaseQues {
     readonly type: "date";
 }
 
+// 时间选择题
+interface TimeQues extends BaseQues {
+    readonly type: "time";
+}
+
+// 基础数字题
+interface NumberQues extends BaseQues {
+    readonly type: "number";
+    readonly placeholder?: string;
+    readonly readonly?: boolean;
+}
+
+// 滑块题
+interface SliderQues extends BaseQues {
+    readonly type: "slider";
+    readonly min?: number;
+    readonly max?: number;
+    readonly step?: number;
+}
+
+// 评分题
+interface RatingQues extends BaseQues {
+    readonly type: "rating";
+    readonly max?: number;
+}
+
 type Ques =
     | DescQues
     | TextQues
     | RadioQues
     | CheckboxQues
     | SwitchQues
-    | DateQues;
+    | DateQues
+    | TimeQues
+    | NumberQues
+    | SliderQues
+    | RatingQues;
 
 export type { Ques };

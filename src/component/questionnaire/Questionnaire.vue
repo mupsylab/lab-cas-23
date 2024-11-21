@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElButton, ElForm, ElSelect, ElOption, ElFormItem, ElInput, ElRadioGroup, ElRadio, ElCheckboxGroup, ElCheckbox, ElDivider, ElDatePicker, ElConfigProvider } from "element-plus";
+import { ElButton, ElForm, ElSelect, ElSlider, ElOption, ElFormItem, ElInput, ElRadioGroup, ElRadio, ElCheckboxGroup, ElCheckbox, ElDivider, ElDatePicker, ElTimePicker, ElConfigProvider, ElRate } from "element-plus";
 import type { FormInstance, FormRules, FormItemRule } from 'element-plus'
 import { reactive, ref, toRaw } from "vue";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
@@ -14,7 +14,7 @@ const propQues: Ques[] = props.ques ?? [];
 const form = reactive((function () {
     const obj: { [key: string]: any } = {};
     propQues.forEach(item => {
-        if(item.type === "checkbox") {
+        if (item.type === "checkbox") {
             obj[item.name] = [];
         } else {
             obj[item.name] = "";
@@ -52,14 +52,9 @@ const formRef = ref<FormInstance>();
 
 <template>
     <div class="questionnaire">
-        <ElForm ref="formRef" 
-                status-icon 
-                :rules="rules" 
-                :model="form" 
-                @submit.prevent 
-                label-position="top" 
-                size="large">
-            <template v-for="ques in propQues">
+        <ElForm ref="formRef" status-icon :rules="rules" :model="form" @submit.prevent label-position="top"
+            size="large">
+            <template v-for="ques in propQues" :key="ques.name">
                 <div class="question-title">{{ ques.title }}</div>
                 <ElFormItem :prop="ques.name">
                     <template v-if="ques.type == 'desc'">
@@ -68,6 +63,10 @@ const formRef = ref<FormInstance>();
                     <template v-if="ques.type == 'text'">
                         <ElInput :name="ques.name" :readonly="ques.readonly ?? false"
                             :show-password="ques.showPassword ?? false" :placeholder="ques.placeholder"
+                            v-model="form[ques.name]" />
+                    </template>
+                    <template v-if="ques.type == 'number'">
+                        <ElInput type="number" :name="ques.name" :placeholder="ques.placeholder"
                             v-model="form[ques.name]" />
                     </template>
                     <template v-if="ques.type == 'radio'">
@@ -91,17 +90,24 @@ const formRef = ref<FormInstance>();
                     </template>
                     <template v-if="ques.type == 'date'">
                         <ElConfigProvider :locale="locale">
-                            <ElDatePicker v-model="form[ques.name]" 
-                                          format="YYYY/MM/DD" 
-                                          value-format="YYYY/MM/DD" />
+                            <ElDatePicker v-model="form[ques.name]" format="YYYY/MM/DD" value-format="YYYY/MM/DD" />
                         </ElConfigProvider>
+                    </template>
+                    <template v-if="ques.type == 'time'">
+                        <ElTimePicker v-model="form[ques.name]" placeholder="选择时间" />
+                    </template>
+                    <template v-if="ques.type == 'slider'">
+                        <ElSlider v-model="form[ques.name]" :min="ques.min" :max="ques.max" :step="ques.step" />
+                    </template>
+                    <template v-if="ques.type == 'rating'">
+                        <ElRate v-model="form[ques.name]" :max="ques.max" />
                     </template>
                 </ElFormItem>
                 <ElDivider />
             </template>
             <div style="text-align: center;">
-                <ElButton type="danger" @click="resetForm(formRef);">清除</ElButton>
-                <ElButton type="primary" @click="submitForm(formRef);">提交</ElButton>
+                <ElButton type="danger" @click="resetForm(formRef);">{{locale.el.colorpicker.clear}}</ElButton>
+                <ElButton type="primary" @click="submitForm(formRef);">{{locale.el.colorpicker.confirm}}</ElButton>
             </div>
         </ElForm>
     </div>
@@ -110,6 +116,7 @@ const formRef = ref<FormInstance>();
 <style scoped>
 .questionnaire {
     max-width: 380px;
+    padding: 100px 0;
     text-align: left;
     user-select: none;
 }
