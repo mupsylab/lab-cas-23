@@ -19,6 +19,9 @@ export class Trial extends TimelineNode {
         this.id = index;
     }
 
+    reset() {
+        this.results = [];
+    }
     run() {
         if (this.description.on_start) this.description.on_start(this);
         const component: VNode = typeof this.description.component === "function" ? this.description.component(this) : this.description.component;
@@ -31,6 +34,8 @@ export class Trial extends TimelineNode {
     finish(data: TrialResult) {
         JsPsych.plugin.timer.clearAllTimer();
         JsPsych.plugin.keyboard.removeAllListener();
+        JsPsych.plugin.pointer.removeAllListener();
+
         render(null, this.parent.getDisplayDom());
         nextTick(() => {
             this.trial_finish_time = JsPsych.instance.currTime;
@@ -41,10 +46,10 @@ export class Trial extends TimelineNode {
             });
             if (this.description.on_finish) this.description.on_finish(data);
             this.write(data);
-        });
 
-        this.parent.getTopTimeline().next();
-        this.parent.getTopTimeline().run();
+            this.parent.getTopTimeline().next();
+            this.parent.getTopTimeline().run();
+        });
     }
     getIntervalTime(time: number) {
         return time - this.trial_start_time;

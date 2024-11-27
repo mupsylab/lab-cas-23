@@ -37,9 +37,7 @@ export class Timeline extends TimelineNode {
         this.cursor_repetition = 0;
 
         for(const childNode of this.childNodes) {
-            if (childNode instanceof Timeline) {
-                childNode.reset();
-            }
+            childNode.reset();
         }
         this.status = TimelineNodeStatus.RUNNING;
     }
@@ -71,7 +69,12 @@ export class Timeline extends TimelineNode {
             if (this.cursor_variable && this.cursor_variable % this.timeline_variables.length === 0) {
                 // 变量循环完毕
                 this.cursor_variable = 0;
-                if(loop_function && loop_function(new DataCollection(this.getResults()))) return 0;
+                if(loop_function && loop_function(new DataCollection(this.getResults()))) {
+                    for(const child of this.childNodes) {
+                        child.reset();
+                    }
+                    return 0;
+                }
                 this.cursor_repetition += 1;
                 if(this.cursor_repetition >= repetitions) {
                     this.status = TimelineNodeStatus.COMPLETED;

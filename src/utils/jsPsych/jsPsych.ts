@@ -1,13 +1,18 @@
 import { Data } from "./module/data";
 import { KeyboardListenerAPI, TimerAPI } from "./module/plugin-api";
+import { PointerListenerAPI } from "./module/plugin-api/PointerListenerAPI";
 import { TimelineArray, TimelineDescription } from "./timeline";
 import { Timeline } from "./timeline/Timeline";
+import * as utils from "./module/utils";
+import * as random from "./module/randomization";
 
 export class JsPsych {
     private static only_instance: JsPsych | undefined;
     public static plugin = {
         timer: new TimerAPI(),
-        keyboard: new KeyboardListenerAPI()
+        keyboard: new KeyboardListenerAPI(),
+        pointer: new PointerListenerAPI(),
+        utils, random
     };
     private timeline: Timeline;
     public data: Data = new Data();
