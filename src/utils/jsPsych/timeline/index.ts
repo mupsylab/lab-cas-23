@@ -9,11 +9,7 @@ export type SampleOptions =
     | { type: "alternate-groups"; groups: number[][]; randomize_group_order?: boolean }
     | { type: "custom"; fn: (ids: number[]) => number[] };
 
-export class TimelineVariable {
-    constructor(public readonly name: string) { }
-}
-
-export type Parameter<T> = T | (() => T) | TimelineVariable;
+export type Parameter<T> = T | ((trial: Trial) => T);
 export type TimelineArray = Array<TimelineDescription | TrialDescription>;
 
 export interface TimelineDescription extends Record<string, any> {
@@ -34,7 +30,7 @@ export interface TimelineDescription extends Record<string, any> {
 }
 
 export interface TrialDescription extends Record<string, any> {
-    component: VNode | ((trial: Trial) => VNode);
+    component: Parameter<VNode>;
 
     on_start?: (trial: Trial) => void;
     on_load?: (component: VNode) => void;
