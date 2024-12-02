@@ -37,33 +37,37 @@ export class Timeline extends TimelineNode {
         this.cursor_repetition = 0;
         this.timeline_variables = this.generateTimelineVariableOrder();
 
-        for(const childNode of this.childNodes) {
+        for (const childNode of this.childNodes) {
             childNode.reset();
         }
         this.status = TimelineNodeStatus.RUNNING;
     }
     run() {
-        if(this.status !== TimelineNodeStatus.RUNNING) return 0;
-        const { conditional_function} = this.description;
+        if (this.status !== TimelineNodeStatus.RUNNING) return 0;
+        const { conditional_function } = this.description;
         if (!conditional_function || conditional_function()) {
             if (this.description.on_timeline_start) this.description.on_timeline_start();
 
             this.childNodes[this.cursor_node].run();
 
             if (this.description.on_timeline_finish) this.description.on_timeline_finish();
+        } else {
+            this.status = TimelineNodeStatus.ABORTED;
+            this.getTopTimeline().next();
+            this.getTopTimeline().run();
         }
     }
     next() {
-        if(this.status !== TimelineNodeStatus.RUNNING) return 0;
+        if (this.status !== TimelineNodeStatus.RUNNING) return 0;
         const { loop_function, repetitions = 1 } = this.description;
-        if(this.childNodes[this.cursor_node] instanceof Timeline) {
+        if (this.childNodes[this.cursor_node] instanceof Timeline) {
             // 如果子节点也是timeline, 则需要先跑完子节点的时间线
             const childNode = this.childNodes[this.cursor_node] as Timeline;
             childNode.next();
-            if(childNode.getStatus() === TimelineNodeStatus.RUNNING) return 0;
+            if (childNode.getStatus() === TimelineNodeStatus.RUNNING) return 0;
         }
         this.cursor_node += 1;
-        if(this.cursor_node >= this.childNodes.length) {
+        if (this.cursor_node >= this.childNodes.length) {
             // 一轮完毕
             this.cursor_node = 0;
             this.cursor_variable += 1;
@@ -71,9 +75,9 @@ export class Timeline extends TimelineNode {
                 // 变量循环完毕
                 this.cursor_variable = 0;
                 this.cursor_repetition += 1;
-                if(this.cursor_repetition >= repetitions) {
-                    if(loop_function && loop_function(new DataCollection(this.getResults()))) {
-                        for(const child of this.childNodes) {
+                if (this.cursor_repetition >= repetitions) {
+                    if (loop_function && loop_function(new DataCollection(this.getResults()))) {
+                        for (const child of this.childNodes) {
                             child.reset();
                         }
                         this.reset();
@@ -89,14 +93,14 @@ export class Timeline extends TimelineNode {
     }
     getCurrId(): string {
         let id = [];
-        if(this.parent instanceof Timeline) {
+        if (this.parent instanceof Timeline) {
             id.push(...this.parent.getCurrId().split("-"));
         }
-        id.push(this.id);
+        id.push(`${this.id}.${this.cursor_repetition}.${this.cursor_variable}`);
         return id.join("-");
     }
     getTopTimeline(): Timeline {
-        if(this.parent instanceof Timeline) {
+        if (this.parent instanceof Timeline) {
             return this.parent.getTopTimeline();
         }
         return this;
@@ -111,13 +115,28 @@ export class Timeline extends TimelineNode {
     }
     getResults() {
         const results: TrialResults = [];
-        for (const child of this.childNodes) {
-            results.push(...child.getResults());
+        const { repetitions = 1 } = this.description;
+        for (let j = 0; j < repetitions; j++) {
+            for (let i = 0; i < this.timeline_variables.length; i++) {
+                for (const child of this.childNodes) {
+                    if (child instanceof Trial) {
+                        // 如果为试次的话, 则取出指定位置的结果
+                        results.push(...child.getResults(
+                            j * this.timeline_variables.length + i
+                        ));
+                    }
+
+                    if (child instanceof Timeline) {
+                        // 如果为时间线的话, 则取出全部的结果
+                        results.push(...child.getResults());
+                    }
+                }
+            }
         }
         return results;
     }
     getDisplayDom(): Element {
-        if(this.parent instanceof Timeline) {
+        if (this.parent instanceof Timeline) {
             return this.parent.getDisplayDom();
         }
         return this.parent as Element;

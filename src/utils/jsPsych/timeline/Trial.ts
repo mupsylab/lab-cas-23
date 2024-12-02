@@ -1,4 +1,4 @@
-import { nextTick, render, VNode } from "vue";
+import { nextTick, render } from "vue";
 import { Parameter, TrialDescription, TrialResult, TrialResults } from ".";
 import { Timeline } from "./Timeline";
 import { TimelineNode } from "./TimelineNode";
@@ -75,8 +75,11 @@ export class Trial extends TimelineNode {
     getCurrId() {
         return `${this.parent.getCurrId()}-${this.id}`
     }
-    getResults() {
-        return this.results;
+    getResults(i: number) {
+        if(i >= this.results.length) {
+            return [];
+        }
+        return [this.results[i]];
     }
     write(data: TrialResult) {
         this.results.push(data);

@@ -9,7 +9,7 @@ export abstract class TimelineNode {
 
     abstract reset(): void;
     abstract run(): void;
-    abstract getResults(): TrialResults;
+    abstract getResults(i: number): TrialResults;
 
     constructor() { }
 }

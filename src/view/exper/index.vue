@@ -27,26 +27,35 @@ timeline.push({
     })
 });
 
+let i = 0;
 timeline.push({
-    component() {
-        return h(HtmlKeyboard, {
-            stimulus: "+",
-            stimulus_duration: 500,
-            trial_duration_time: 1000,
-        })
-    }
-}, {
-    component() {
-        return h(Survey)
+    timeline: [{
+        component() {
+            return h(HtmlKeyboard, {
+                stimulus: "+",
+                stimulus_duration: 500,
+                trial_duration_time: 1000,
+            })
+        }
+    }, {
+        component() {
+            return h(HtmlKeyboard, {
+                stimulus: i.toString(),
+                stimulus_duration: 500,
+                trial_duration_time: 1000,
+            })
+        },
+        on_start() {
+            i += 1;
+        }
+    }],
+    repetitions: 5,
+    conditional_function() {
+        return true;
     },
-    on_start(trial) {
-        console.log(trial.parent?.getAllTimelineVariables());
-    },
-    on_load(component) {
-        console.log(component);
-    },
-    on_finish(data) {
-        console.log(data)
+    loop_function(data) {
+        console.log(data);
+        return true;
     }
 });
 
