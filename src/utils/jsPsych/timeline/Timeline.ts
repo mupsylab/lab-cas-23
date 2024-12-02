@@ -43,7 +43,13 @@ export class Timeline extends TimelineNode {
         this.status = TimelineNodeStatus.RUNNING;
     }
     run() {
-        if (this.status !== TimelineNodeStatus.RUNNING) return 0;
+        if (this.status !== TimelineNodeStatus.RUNNING) {
+            // 当前时间线已结束
+            if(this.parent instanceof Timeline) {
+                this.parent.nextRun();
+            }
+            return 0;
+        }
         const { conditional_function } = this.description;
         if (!conditional_function || conditional_function()) {
             if (this.description.on_timeline_start) this.description.on_timeline_start();
@@ -52,20 +58,16 @@ export class Timeline extends TimelineNode {
 
             if (this.description.on_timeline_finish) this.description.on_timeline_finish();
         } else {
+            // 条件不通过, 结束运行
             this.status = TimelineNodeStatus.ABORTED;
-            this.getTopTimeline().next();
-            this.getTopTimeline().run();
+            if(this.parent instanceof Timeline) {
+                this.parent.nextRun();
+            }
         }
     }
     next() {
         if (this.status !== TimelineNodeStatus.RUNNING) return 0;
         const { loop_function, repetitions = 1 } = this.description;
-        if (this.childNodes[this.cursor_node] instanceof Timeline) {
-            // 如果子节点也是timeline, 则需要先跑完子节点的时间线
-            const childNode = this.childNodes[this.cursor_node] as Timeline;
-            childNode.next();
-            if (childNode.getStatus() === TimelineNodeStatus.RUNNING) return 0;
-        }
         this.cursor_node += 1;
         if (this.cursor_node >= this.childNodes.length) {
             // 一轮完毕
@@ -90,6 +92,10 @@ export class Timeline extends TimelineNode {
                 this.timeline_variables = this.generateTimelineVariableOrder();
             }
         }
+    }
+    nextRun() {
+        this.next();
+        this.run();
     }
     getCurrId(): string {
         let id = [];

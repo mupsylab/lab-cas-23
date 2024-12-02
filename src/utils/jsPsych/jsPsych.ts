@@ -24,11 +24,7 @@ export class JsPsych {
     }
     load(timeline: TimelineDescription | TimelineArray, dom: HTMLElement) {
         this.timeline = new Timeline(timeline, dom);
-    }
-    next() {
-        this.timeline.next();
-    }
-    run() {
+
         this.timeline.run();
     }
     get currTrial() {

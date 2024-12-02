@@ -55,7 +55,7 @@ timeline.push({
     },
     loop_function(data) {
         console.log(data);
-        return true;
+        return false;
     }
 });
 
@@ -70,6 +70,5 @@ timeline.push({
 onMounted(() => {
     const expDom = document.querySelector("#exp") as HTMLDivElement;
     jspsych.load(timeline, expDom);
-    jspsych.run();
 });
 </script>

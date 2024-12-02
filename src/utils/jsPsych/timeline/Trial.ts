@@ -65,8 +65,7 @@ export class Trial extends TimelineNode {
             if (this.description.on_finish) this.description.on_finish(data);
             this.write(data);
 
-            this.parent.getTopTimeline().next();
-            this.parent.getTopTimeline().run();
+            this.parent.nextRun();
         });
     }
     getIntervalTime(time: number) {
