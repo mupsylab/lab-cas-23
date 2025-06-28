@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 
+type assetRecord = [string, string];
 export const useLoaderAssets = defineStore("loader-assets-to-blobs", {
     state() {
         return {
             _running: false,
-            tmpSet: new Set<string>(), // 用于存储准备加载的静态资源
+            tmpArr: new Array<assetRecord>(), // 用于存储准备加载的静态资源
             blobMap: new Map<string, string>(), // 用于存储最后的blob资源
             loading: 0, // 处于加载中的进度条
         }
@@ -12,11 +13,11 @@ export const useLoaderAssets = defineStore("loader-assets-to-blobs", {
     getters: {
         isInit(): boolean { return !!this.blobMap.size },
         isRunning(): boolean { return this._running },
-        isFinish(): boolean { return !this.tmpSet.size },
+        isFinish(): boolean { return !this.tmpArr.length },
         progress(): {len: number, left: number, loading: number} {
             return {
-                len: this.tmpSet.size + this.blobMap.size,
-                left: this.tmpSet.size,
+                len: this.tmpArr.length + this.blobMap.size,
+                left: this.tmpArr.length,
                 loading: this.loading
             }
         }
@@ -48,18 +49,27 @@ export const useLoaderAssets = defineStore("loader-assets-to-blobs", {
             xhr.send();
         },
         _loadSuccess(url: string, blob: Blob) {
-            this.tmpSet.delete(url);
-            this.blobMap.set(url, URL.createObjectURL(blob));
+            this.tmpArr.map((v, i) => {
+                if (v[1] === url) {
+                    this.tmpArr.splice(i, 1);
+                    this.blobMap.set(v[0], URL.createObjectURL(blob));
+                }
+            });
         },
         _loadError(url: string, e: string) {
             console.warn(`load Assets Error: ${e}, url: ${url}`);
         },
-        addAssets(str: string) {
-            this.tmpSet.add(str);
+        addAssets(name: string, str: string) {
+            this.tmpArr.push([name, str]);
         },
         removeAssets(str: string) {
             URL.revokeObjectURL(this.getAssets(str));
-            this.tmpSet.delete(str);
+            this.tmpArr.forEach((v, i) => {
+                if (v[1] === str) {
+                    this.tmpArr.splice(i, 1);
+                    this.blobMap.delete(v[0]);
+                }
+            });
         },
         getAssets(str: string) {
             const url = this.blobMap.get(str)
@@ -69,13 +79,13 @@ export const useLoaderAssets = defineStore("loader-assets-to-blobs", {
             if(this.isRunning) {
                 return 0;
             }
-            this._running = false;
+            this._running = true;
 
-            this.tmpSet.forEach(v => {
-                this._addAssetsToBlobAsync(v);
+            this.tmpArr.forEach(v => {
+                this._addAssetsToBlobAsync(v[1]);
             });
 
-            this._running = true;
+            this._running = false;
             return 1;
         }
     }

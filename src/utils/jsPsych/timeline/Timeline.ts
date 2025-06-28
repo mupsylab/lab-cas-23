@@ -25,14 +25,14 @@ export class Timeline extends TimelineNode {
         this.id = id;
         this.description = Array.isArray(description) ? { timeline: description } : description;
         this.childNodes = this.description.timeline.map(
-            (item, index) => Object.hasOwn(item, "timeline") ? new Timeline(item as TimelineDescription, this, index) : new Trial(item as TrialDescription, this, index)
+            (item, index) => item.hasOwnProperty("timeline") ? new Timeline(item as TimelineDescription, this, index) : new Trial(item as TrialDescription, this, index)
         );
         this.timeline_variables = this.generateTimelineVariableOrder();
         this.reset();
     }
 
     reset() {
-        this.cursor_node = 0;
+        this.cursor_node = -1;
         this.cursor_variable = 0;
         this.cursor_repetition = 0;
         this.timeline_variables = this.generateTimelineVariableOrder();
@@ -43,32 +43,41 @@ export class Timeline extends TimelineNode {
         this.status = TimelineNodeStatus.RUNNING;
     }
     run() {
-        if (this.status !== TimelineNodeStatus.RUNNING) {
-            // 当前时间线已结束
-            if(this.parent instanceof Timeline) {
-                this.parent.nextRun();
+        this.next();
+        if (this.status === TimelineNodeStatus.COMPLETED) {
+            // 当前时间线已完成
+            if (this.parent instanceof Timeline) {
+                this.parent.run();
             }
             return 0;
         }
-        const { conditional_function } = this.description;
-        if (!conditional_function || conditional_function()) {
-            if (this.description.on_timeline_start) this.description.on_timeline_start();
-
-            this.childNodes[this.cursor_node].run();
-
-            if (this.description.on_timeline_finish) this.description.on_timeline_finish();
-        } else {
-            // 条件不通过, 结束运行
-            this.status = TimelineNodeStatus.ABORTED;
-            if(this.parent instanceof Timeline) {
-                this.parent.nextRun();
-            }
+        if (this.status !== TimelineNodeStatus.RUNNING) {
+            // 当前时间线没运行
+            return 0;
         }
+        this.childNodes[this.cursor_node].run();
     }
     next() {
-        if (this.status !== TimelineNodeStatus.RUNNING) return 0;
-        const { loop_function, repetitions = 1 } = this.description;
-        this.cursor_node += 1;
+        if (this.status !== TimelineNodeStatus.RUNNING) {
+            // 当前时间线已暂停
+            return 0;
+        }
+        const { conditional_function, loop_function, repetitions = 1 } = this.description;
+        if (this.cursor_node === -1) {
+            if (!(!conditional_function || conditional_function())) {
+                // 如果有条件函数, 且条件函数返回 false, 则不执行下一步
+                if(this.parent instanceof Timeline) {
+                    this.parent.run();
+                }
+    
+                this.status = TimelineNodeStatus.ABORTED;
+                return 0;
+            }
+            if (this.description.on_timeline_start) this.description.on_timeline_start();
+            this.cursor_node = 0; // 初始化试次
+            return 0;
+        }
+        this.cursor_node += 1; // 试次增加
         if (this.cursor_node >= this.childNodes.length) {
             // 一轮完毕
             this.cursor_node = 0;
@@ -79,23 +88,18 @@ export class Timeline extends TimelineNode {
                 this.cursor_repetition += 1;
                 if (this.cursor_repetition >= repetitions) {
                     if (loop_function && loop_function(new DataCollection(this.getResults()))) {
-                        for (const child of this.childNodes) {
-                            child.reset();
-                        }
                         this.reset();
+                        this.cursor_node = 0;
                         return 0;
                     }
 
+                    if (this.description.on_timeline_finish) this.description.on_timeline_finish();
                     this.status = TimelineNodeStatus.COMPLETED;
                     return 0;
                 }
                 this.timeline_variables = this.generateTimelineVariableOrder();
             }
         }
-    }
-    nextRun() {
-        this.next();
-        this.run();
     }
     getCurrId(): string {
         let id = [];
@@ -189,5 +193,17 @@ export class Timeline extends TimelineNode {
             ...this.parent instanceof Timeline ? this.parent.getAllTimelineVariables() : {},
             ...this.description.timeline_variables ? this.description.timeline_variables[this.cursor_variable] : {}
         };
+    }
+    pause() {
+        if (this.status === TimelineNodeStatus.RUNNING) {
+            this.status = TimelineNodeStatus.PAUSED;
+            this.childNodes[this.cursor_node].pause();
+        }
+    }
+    resume(): void {
+        if (this.status === TimelineNodeStatus.PAUSED) {
+            this.status = TimelineNodeStatus.RUNNING;
+            this.childNodes[this.cursor_node].resume();
+        }
     }
 }

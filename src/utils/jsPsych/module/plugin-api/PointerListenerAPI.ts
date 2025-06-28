@@ -1,4 +1,4 @@
-// KeyboardListener.ts
+// PointerListenerAPI.ts
 
 import { JsPsych } from "../../jsPsych";
 

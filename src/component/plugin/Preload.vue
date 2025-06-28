@@ -5,7 +5,7 @@ import { useCheckBrowserInfo } from '../../store/browserCheck';
 import { JsPsych } from '../../utils/jsPsych/jsPsych';
 
 const props = defineProps({
-    assets: Array<string>
+    assets: Array<[string, string]> // 资源名称和资源路径的元组数组
 });
 const cbi = useCheckBrowserInfo();
 const loader = useLoaderAssets();
@@ -19,8 +19,8 @@ const end = () => {
 }
 onMounted(() => {
     if (!loader.isInit) {
-        props.assets?.forEach(s => {
-            loader.addAssets(s);
+        props.assets?.forEach(([k, v]) => {
+            loader.addAssets(k, v);
         });
         cbi.init();
         loader.startLoad();

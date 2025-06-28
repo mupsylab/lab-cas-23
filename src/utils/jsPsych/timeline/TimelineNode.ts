@@ -7,6 +7,9 @@ export abstract class TimelineNode {
 
     public index?: number;
 
+    abstract pause(): void;
+    abstract resume(): void;
+
     abstract reset(): void;
     abstract run(): void;
     abstract getResults(i: number): TrialResults;

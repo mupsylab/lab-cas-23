@@ -14,8 +14,10 @@ const propQues: Ques[] = props.ques ?? [];
 const form = reactive((function () {
     const obj: { [key: string]: any } = {};
     propQues.forEach(item => {
-        if (item.type === "checkbox") {
+        if (item.type === "checkbox" || item.type === "slider") {
             obj[item.name] = [];
+        } else if (item.type === "rating") {
+            obj[item.name] = 0;
         } else {
             obj[item.name] = "";
         }

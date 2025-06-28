@@ -48,6 +48,17 @@ export class Trial extends TimelineNode {
             if (this.description.on_load) this.description.on_load(component);
         });
     }
+    pause(): void {
+        JsPsych.plugin.timer.clearAllTimer();
+        JsPsych.plugin.keyboard.removeAllListener();
+        JsPsych.plugin.pointer.removeAllListener();
+    }
+    resume(): void {
+        render(null, this.parent.getDisplayDom());
+        nextTick(() => {
+            this.run();
+        });
+    }
     finish(data: TrialResult) {
         JsPsych.plugin.timer.clearAllTimer();
         JsPsych.plugin.keyboard.removeAllListener();
@@ -58,14 +69,14 @@ export class Trial extends TimelineNode {
             this.trial_finish_time = JsPsych.instance.currTime;
             Object.assign(data, {
                 trial_id: this.getCurrId(),
-                trial_start_time: this.trial_start_time,
-                trial_finish_time: this.trial_finish_time,
+                trial_display_time: this.trial_start_time,
+                trial_destory_time: this.trial_finish_time,
                 ...this.properties
             });
             if (this.description.on_finish) this.description.on_finish(data);
             this.write(data);
 
-            this.parent.nextRun();
+            this.parent.run();
         });
     }
     getIntervalTime(time: number) {
