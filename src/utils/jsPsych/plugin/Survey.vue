@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { JsPsych } from '../../utils/jsPsych/jsPsych';
-import { Ques } from '../questionnaire/Questionnaire';
-import Questionnaire from '../questionnaire/Questionnaire.vue';
+import { JsPsych } from '@/utils/jsPsych/jsPsych';
+import { Ques } from '@/component/questionnaire/Questionnaire';
+import Questionnaire from '@/component/questionnaire/Questionnaire.vue';
 
 const props = defineProps({
     ques: {
@@ -32,3 +32,12 @@ const end = (data: Record<string, any>) => {
         <Questionnaire :ques="props.ques" @end-trial="end" />
     </div>
 </template>
+
+<style lang="css" scoped>
+.plugin-box {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+</style>

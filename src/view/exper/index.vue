@@ -1,16 +1,19 @@
-<template>
-    <div id="exp"></div>
-</template>
-
 <script setup lang="ts">
 import { h, onMounted } from 'vue';
 import { JsPsych } from '../../utils/jsPsych/jsPsych';
 import { TimelineArray } from '../../utils/jsPsych/timeline';
 
-import Preload from '../../component/plugin/Preload.vue';
-import HtmlKeyboard from '../../component/plugin/HtmlKeyboard.vue';
-import Survey from '../../component/plugin/Survey.vue';
+import Preload from '@/utils/jsPsych/plugin/Preload.vue';
+import HtmlKeyboard from '@/utils/jsPsych/plugin/HtmlKeyboard.vue';
+import Survey from '@/utils/jsPsych/plugin/Survey.vue';
+import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 
+JsPsych.opts = {
+    ...JsPsych.opts,
+    iti: 0,
+    // forceDirection: "h",
+    toastClose: false
+}
 const jspsych = JsPsych.instance;
 const timeline: TimelineArray = [];
 
@@ -26,9 +29,19 @@ timeline.push({
     })
 });
 
-// timeline.push({
-//     component: h(RotaryPhone)
-// });
+timeline.push({
+    component: h(Survey)
+});
+
+const t = h("div", {}, [
+    h("h1", {}, "欢迎来到jsPsych"),
+    h("p", {}, "请按任意键开始")
+]);
+timeline.push({
+    component: h(Instruction, {
+        pages: [t, t, t, t]
+    })
+});
 
 timeline.push({
     timeline: [{
@@ -64,16 +77,15 @@ timeline.push({
 });
 
 timeline.push({
-    component: h(Survey)
-});
-
-timeline.push({
     component: h(HtmlKeyboard, {
         stimulus: `
 <div style="font-size: 48px; line-height: 96px;">实验结束</div>
 <div style="font-size: 24px; color: var(--font-desc);">&copy; Mupsy 技术支持</div>`,
         choices: ["NO_KEYS"]
-    })
+    }),
+    on_load() {
+        JsPsych.plugin.window.destoryListener();
+    }
 });
 
 onMounted(() => {
@@ -81,3 +93,17 @@ onMounted(() => {
     jspsych.load(timeline, expDom);
 });
 </script>
+
+<template>
+    <div id="exp"></div>
+</template>
+
+<style lang="css" scoped>
+#exp {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+</style>

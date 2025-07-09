@@ -42,11 +42,13 @@ export class Trial extends TimelineNode {
     run() {
         if (this.description.on_start) this.description.on_start(this);
         const component = this.parseParameterValue(this.description.component);
-        render(component, this.parent.getDisplayDom());
-        nextTick(() => {
-            this.trial_start_time = JsPsych.instance.currTime;
-            if (this.description.on_load) this.description.on_load(component);
-        });
+        JsPsych.plugin.timer.setTimeout(() => {
+            render(component, this.parent.getDisplayDom());
+            nextTick(() => {
+                this.trial_start_time = JsPsych.instance.currTime;
+                if (this.description.on_load) this.description.on_load(component);
+            });
+        }, JsPsych.opts.iti ?? 0);
     }
     pause(): void {
         JsPsych.plugin.timer.clearAllTimer();

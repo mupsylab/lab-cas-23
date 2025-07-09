@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { JsPsych } from '../../utils/jsPsych/jsPsych';
+import { JsPsych } from '@/utils/jsPsych/jsPsych';
 
 const props = defineProps({
     stimulus: {

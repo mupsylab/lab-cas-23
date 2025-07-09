@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ElButton } from 'element-plus';
-import { JsPsych } from '../../utils/jsPsych/jsPsych';
+import { JsPsych } from '@/utils/jsPsych/jsPsych';
 import { onMounted } from 'vue';
 
 const props = defineProps({

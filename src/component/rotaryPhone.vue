@@ -4,14 +4,28 @@ import { Iphone } from '@element-plus/icons-vue';
 
 <template>
     <div class="rotary-phone">
-        <div class="icon"><Iphone /></div>
+        <div class="icon">
+            <div><Iphone /></div>
+        </div>
         <p class="text">请旋转屏幕</p>
     </div>
 </template>
 
 <style scoped>
 .rotary-phone .icon {
+    width: 128px;
+    height: 128px;
+    text-align: center;
     animation: ro 1s linear infinite;
+}
+.rotary-phone .icon div {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+    margin: 32px 0 0 0;
+}
+p {
+    text-align: center;
 }
 
 @keyframes ro {

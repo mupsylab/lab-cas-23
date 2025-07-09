@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useLoaderAssets } from '../../store/loadAssetsToBlob';
-import { useCheckBrowserInfo } from '../../store/browserCheck';
-import { JsPsych } from '../../utils/jsPsych/jsPsych';
+import { useLoaderAssets } from '@/store/loadAssetsToBlob';
+import { useCheckBrowserInfo } from '@/store/browserCheck';
+import { JsPsych } from '@/utils/jsPsych/jsPsych';
 
 const props = defineProps({
     assets: Array<[string, string]> // 资源名称和资源路径的元组数组
@@ -13,8 +13,10 @@ const totalNumDom = ref("0");
 const countNumDom = ref("-1");
 
 const end = () => {
+    const browser = Object.assign({}, cbi.browser);
     JsPsych.instance.currTrial.finish({
-        trial_type: "perload"
+        trial_type: "perload",
+        browser_info: JSON.stringify(browser)
     });
 }
 onMounted(() => {

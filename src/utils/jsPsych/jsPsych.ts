@@ -14,10 +14,21 @@ interface JsPsychOptions {
      * 强制显示器的方向，默认无
      */
     forceDirection?: "h" | "v";
+    /**
+     * 试次间隔时间，默认0
+     */
+    iti?: number;
+    /**
+     * 刷新浏览器的时候是否显示提示框
+     */
+    toastClose?: boolean;
 }
 
 export class JsPsych {
     private static only_instance: JsPsych | undefined;
+    public static opts: JsPsychOptions = {
+        toastClose: true
+    };
     public static plugin = {
         timer: new TimerAPI(),
         keyboard: new KeyboardListenerAPI(),
@@ -28,17 +39,18 @@ export class JsPsych {
     private timeline: Timeline;
     public data: Data = new Data();
 
-    constructor(public opts: JsPsychOptions) {
+    constructor() {
         this.data.reset();
         this.timeline = new Timeline([], document.documentElement);
-
-        JsPsych.plugin.keyboard.registerListener();
-        JsPsych.plugin.pointer.registerListener();
     }
     load(timeline: TimelineDescription | TimelineArray, dom: HTMLElement) {
         this.timeline = new Timeline(timeline, dom);
 
+        JsPsych.plugin.keyboard.registerListener();
+        JsPsych.plugin.pointer.registerListener();
+        JsPsych.plugin.window.registerListener();
         this.timeline.run();
+        JsPsych.plugin.window.init();
     }
     pause() {
         this.timeline.pause();
@@ -53,7 +65,9 @@ export class JsPsych {
         return new Date().getTime();
     }
     static get instance() {
-        if (JsPsych.only_instance === undefined) JsPsych.only_instance = new JsPsych({});
+        if (JsPsych.only_instance === undefined) {
+            JsPsych.only_instance = new JsPsych();
+        }
         return JsPsych.only_instance;
     }
 }

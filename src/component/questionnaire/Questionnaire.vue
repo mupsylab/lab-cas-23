@@ -117,8 +117,9 @@ const formRef = ref<FormInstance>();
 
 <style scoped>
 .questionnaire {
-    max-width: 380px;
-    padding: 100px 0;
+    max-width: 280px;
+    margin: auto;
+    padding: 0 32px;
     text-align: left;
     user-select: none;
 }
