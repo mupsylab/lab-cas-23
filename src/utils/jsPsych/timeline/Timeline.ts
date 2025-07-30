@@ -31,15 +31,18 @@ export class Timeline extends TimelineNode {
         this.reset();
     }
 
+    private resetChild() {
+        for (const childNode of this.childNodes) {
+            childNode.reset();
+        }
+    }
     reset() {
         this.cursor_node = -1;
         this.cursor_variable = 0;
         this.cursor_repetition = 0;
         this.timeline_variables = this.generateTimelineVariableOrder();
 
-        for (const childNode of this.childNodes) {
-            childNode.reset();
-        }
+        this.resetChild();
         this.status = TimelineNodeStatus.RUNNING;
     }
     run() {
@@ -75,6 +78,7 @@ export class Timeline extends TimelineNode {
             }
             if (this.description.on_timeline_start) this.description.on_timeline_start();
             this.cursor_node = 0; // 初始化试次
+            this.resetChild();
             return 0;
         }
         this.cursor_node += 1; // 试次增加
@@ -82,6 +86,7 @@ export class Timeline extends TimelineNode {
             // 一轮完毕
             this.cursor_node = 0;
             this.cursor_variable += 1;
+            this.resetChild();
             if (this.cursor_variable && this.cursor_variable % this.timeline_variables.length === 0) {
                 // 变量循环完毕
                 this.cursor_variable = 0;
@@ -191,7 +196,7 @@ export class Timeline extends TimelineNode {
     public getAllTimelineVariables(): Record<string, any> {
         return {
             ...this.parent instanceof Timeline ? this.parent.getAllTimelineVariables() : {},
-            ...this.description.timeline_variables ? this.description.timeline_variables[this.cursor_variable] : {}
+            ...this.description.timeline_variables ? this.description.timeline_variables[this.timeline_variables[this.cursor_variable]] : {}
         };
     }
     pause() {
