@@ -6,7 +6,7 @@ import { TimelineArray } from '../../utils/jsPsych/timeline';
 import Preload from '@/utils/jsPsych/plugin/Preload.vue';
 import HtmlKeyboard from '@/utils/jsPsych/plugin/HtmlKeyboard.vue';
 import SliderChoose from './component/exp1/SliderChoose.vue';
-import { exp1Dims, exp1Words } from './config';
+import { exp1Dims, exp1Words, save_csv } from './config';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import Instruct_all from './component/exp1/Instruct_all.vue';
 import Survey from '@/utils/jsPsych/plugin/Survey.vue';
@@ -94,15 +94,7 @@ timeline.push({
     }),
     on_load() {
         JsPsych.plugin.window.destoryListener();
-        // 在实验结束时自动下载数据
-        const blob = new Blob([jspsych.data.get().csv()], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'experiment_data.csv';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        save_csv(jspsych.data.get().csv(), "experiment1_data");
     }
 });
 

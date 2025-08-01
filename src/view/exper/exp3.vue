@@ -9,6 +9,8 @@ import Survey from '@/utils/jsPsych/plugin/Survey.vue';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import DragPage from './component/exp3/DragPage.vue';
 import Instruct_all from './component/exp3/Instruct_all.vue';
+import { exp3TimeVars, faceImgs, save_csv } from './config';
+import { ElMessage } from 'element-plus';
 
 JsPsych.opts = {
     ...JsPsych.opts,
@@ -22,22 +24,7 @@ const timeline: TimelineArray = [];
 timeline.push({
     component: h(Preload, {
         assets: [
-            ["happy-m1", "./assets/imgs/Y1M-19_neutral.jpg"],
-            ["happy-m2", "./assets/imgs/Y2M-21_neutral.jpg"],
-            ["happy-m3", "./assets/imgs/Y8M-27_neutral.jpg"],
-            ["happy-m4", "./assets/imgs/Y10M-22_neutral.jpg"],
-            ["happy-m5", "./assets/imgs/Y11M-20_neutral.jpg"],
-            ["happy-m6", "./assets/imgs/Y15M-20_neutral.jpg"],
-            ["happy-m7", "./assets/imgs/Y16M-21_neutral.jpg"],
-            ["happy-m8", "./assets/imgs/Y21M-21_neutral.jpg"],
-            ["happy-f1", "./assets/imgs/Y4F-19_neutral.jpg"],
-            ["happy-f2", "./assets/imgs/Y5F-24_neutral.jpg"],
-            ["happy-f3", "./assets/imgs/Y6F-23_neutral.jpg"],
-            ["happy-f4", "./assets/imgs/Y17F-33_neutral.jpg"],
-            ["happy-f5", "./assets/imgs/Y18F-18_neutral.jpg"],
-            ["happy-f6", "./assets/imgs/Y22F-30_neutral.jpg"],
-            ["happy-f7", "./assets/imgs/Y23F-30_neutral.jpg"],
-            ["happy-f8", "./assets/imgs/Y39F-25_neutral.jpg"]
+            ...faceImgs,
         ]
     })
 });
@@ -58,12 +45,12 @@ timeline.push({
 });
 
 timeline.push({
-    component: h(Instruction, {
-        pages: [h("p", "接下来进入正式实验。")]
-    })
-});
-timeline.push({
     timeline: [{
+        component: h(Instruction, {
+            pages: [h("p", "接下来开始练习")]
+        })
+    }, {
+        timeline: [{
             component() {
                 return h(HtmlKeyboard, {
                     stimulus: "+",
@@ -72,6 +59,48 @@ timeline.push({
                 })
             }
         }, {
+            component() {
+                const { face, bgs } = jspsych.currTrial.parent.getAllTimelineVariables();
+                return h(DragPage, {
+                    mid: face,
+                    bgs: bgs
+                });
+            },
+            on_finish(data) {
+                const { c_picture, response } = data;
+                const correct = c_picture.split("-")[1] === response.split("-")[1];
+                data.correct = correct ? 1 : 0;
+            }
+        }],
+        timeline_variables: exp3TimeVars,
+        randomize_order: true,
+        trial_num: 10
+    }],
+    loop_function() {
+        const correct = jspsych.data.get().filter({ trial_type: "drag-core" }).last(10).select("correct").mean();
+        if (!correct || correct < 0.8) {
+            ElMessage.error("正确率过低, 重新练习");
+            return true;
+        }
+        return false;
+    }
+});
+
+timeline.push({
+    component: h(Instruction, {
+        pages: [h("p", "接下来进入正式实验。")]
+    })
+});
+timeline.push({
+    timeline: [{
+        component() {
+            return h(HtmlKeyboard, {
+                stimulus: "+",
+                stimulus_duration: 500,
+                trial_duration_time: 1000,
+            })
+        }
+    }, {
         component() {
             const { face, bgs } = jspsych.currTrial.parent.getAllTimelineVariables();
             return h(DragPage, {
@@ -80,13 +109,24 @@ timeline.push({
             });
         },
         on_finish(data) {
-            const { correct } = jspsych.currTrial.parent.getAllTimelineVariables();
-            data.correct = correct === data.response ? 1 : 0;
+            const { c_picture, response } = data;
+            const correct = c_picture.split("-")[1] === response.split("-")[1];
+            data.correct = correct ? 1 : 0;
+        }
+    }, {
+        timeline: [{
+            component: h(Instruction, {
+                pages: [h("p", "休息一下吧")]
+            })
+        }],
+        conditional_function() {
+            const trial_id = jspsych.data.get().last(1).values()[0].trial_id as string;
+            const r = trial_id.split("-").map(s => s.split("."));
+            const i = parseInt(r[1][2]) + 1;
+            return i % 60 == 0 && i > 0;
         }
     }],
-    timeline_variables: [
-        { face: "m2", bgs: ["m1", "m3"], correct: "m3" }
-    ],
+    timeline_variables: exp3TimeVars,
     randomize_order: true
 });
 
@@ -99,7 +139,7 @@ timeline.push({
     }),
     on_load() {
         JsPsych.plugin.window.destoryListener();
-        console.log(jspsych.data.get().json())
+        save_csv(jspsych.data.get().csv(), "experiment3_data");
     }
 });
 

@@ -10,7 +10,7 @@ import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import DragPage from './component/exp2/DragPage.vue';
 import Instruct_all from './component/exp2/Instruct_all.vue';
 import { ElMessage } from 'element-plus';
-import { exp2TimeVars } from './config';
+import { exp2TimeVars, faceImgs, save_csv } from './config';
 
 JsPsych.opts = {
     ...JsPsych.opts,
@@ -24,26 +24,13 @@ const timeline: TimelineArray = [];
 timeline.push({
     component: h(Preload, {
         assets: [
-            ["happy-m1", "./assets/imgs/Y1M-19_neutral.jpg"],
-            ["happy-m2", "./assets/imgs/Y2M-21_neutral.jpg"],
-            ["happy-m3", "./assets/imgs/Y8M-27_neutral.jpg"],
-            ["happy-m4", "./assets/imgs/Y10M-22_neutral.jpg"],
-            ["happy-m5", "./assets/imgs/Y11M-20_neutral.jpg"],
-            ["happy-m6", "./assets/imgs/Y15M-20_neutral.jpg"],
-            ["happy-m7", "./assets/imgs/Y16M-21_neutral.jpg"],
-            ["happy-m8", "./assets/imgs/Y21M-21_neutral.jpg"],
-            ["happy-f1", "./assets/imgs/Y4F-19_neutral.jpg"],
-            ["happy-f2", "./assets/imgs/Y5F-24_neutral.jpg"],
-            ["happy-f3", "./assets/imgs/Y6F-23_neutral.jpg"],
-            ["happy-f4", "./assets/imgs/Y17F-33_neutral.jpg"],
-            ["happy-f5", "./assets/imgs/Y18F-18_neutral.jpg"],
-            ["happy-f6", "./assets/imgs/Y22F-30_neutral.jpg"],
-            ["happy-f7", "./assets/imgs/Y23F-30_neutral.jpg"],
-            ["happy-f8", "./assets/imgs/Y39F-25_neutral.jpg"],
+            ...faceImgs,
             ["b_happy", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
-            ["b_angry", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
+            ["b_sad", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
             ["b_fear", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
-            ["b_sad", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"]
+            ["b_angry", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
+            ["b_surprise", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
+            ["b_disgust", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
         ]
     })
 });
@@ -87,7 +74,7 @@ timeline.push({
             },
             on_finish(data) {
                 const { c_picture, response } = data;
-                const correct = c_picture.split("-")[0] === response.split("_")[1];
+                const correct = c_picture.split("-")[1] === response.split("_")[1];
                 data.correct = correct ? 1 : 0;
             }
         }],
@@ -129,7 +116,7 @@ timeline.push({
         },
         on_finish(data) {
             const { c_picture, response } = data;
-            const correct = c_picture.split("-")[0] === response.split("_")[1];
+            const correct = c_picture.split("-")[1] === response.split("_")[1];
             data.correct = correct ? 1 : 0;
         }
     }, {
@@ -142,7 +129,7 @@ timeline.push({
             const trial_id = jspsych.data.get().last(1).values()[0].trial_id as string;
             const r = trial_id.split("-").map(s => s.split("."));
             const i = parseInt(r[1][2]) + 1;
-            return i == 48;
+            return i % 60 == 0 && i > 0;
         }
     }],
     timeline_variables: exp2TimeVars,
@@ -158,7 +145,7 @@ timeline.push({
     }),
     on_load() {
         JsPsych.plugin.window.destoryListener();
-        console.log(jspsych.data.get().json())
+        save_csv(jspsych.data.get().csv(), "experiment2_data");
     }
 });
 

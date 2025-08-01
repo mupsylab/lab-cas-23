@@ -84,27 +84,45 @@ export class Scene {
             width: 0.1 * unit * (pw > ph ? pw / ph : 1),
             height: 0.1 * unit * (pw > ph ? 1 : ph / pw)
         }
-        this.bgs.forEach(item => {
+        const padding = 50;
+        this.bgs.forEach((item, index) => {
             const { width: bw, height: bh } = item.rsize;
             item.size = {
                 width: 0.08 * unit * (bw > bh ? bw / bh : 1),
                 height: 0.08 * unit * (bw > bh ? 1 : bh / bw)
             }
+
+            switch (index) {
+                case 0:
+                    item.pos = {
+                        x: 0 + padding,
+                        y: 0 + padding
+                    }
+                    break;
+                case 1:
+                    item.pos = {
+                        x: width - this.bgs[1].size.width - padding,
+                        y: 0 + padding
+                    }
+                    break;
+                case 2:
+                    item.pos = {
+                        x: 0 + padding,
+                        y: height - this.bgs[2].size.height - padding
+                    }
+                    break;
+                case 3:
+                    item.pos = {
+                        x: width - this.bgs[1].size.width - padding,
+                        y: height - this.bgs[2].size.height - padding
+                    }
+                    break;
+            }
         });
 
-        const padding = 50;
         this.player.pos = {
             x: width / 2 - this.player.size.width / 2,
             y: height - this.player.size.height - padding
-        }
-
-        this.bgs[0].pos = {
-            x: 0 + padding,
-            y: 0 + padding
-        }
-        this.bgs[1].pos = {
-            x: width - this.bgs[1].size.width - padding,
-            y: 0 + padding
         }
 
         this.can_move = true;

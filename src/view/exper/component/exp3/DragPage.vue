@@ -22,6 +22,7 @@ const props = defineProps({
 const scene = new Scene(props.bgs, props.mid);
 
 const record: {
+    trial_type: "drag-core";
     /**开始时间 */
     start_time: number;
     /**按键时间 */
@@ -45,6 +46,7 @@ const record: {
      */
     c_picture_bgs: Array<string>;
 } = {
+    trial_type: "drag-core",
     start_time: JsPsych.instance.currTime,
     end_time: -1,
     rt: -1,
