@@ -15,6 +15,7 @@ export type TimelineArray = Array<TimelineDescription | TrialDescription>;
 export interface TimelineDescription extends Record<string, any> {
     timeline: TimelineArray;
     timeline_variables?: Record<string, any>[];
+    trial_num?: number;
 
     name?: string;
 

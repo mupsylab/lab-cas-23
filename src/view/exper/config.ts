@@ -1,3 +1,5 @@
+import { JsPsych } from "@/utils/jsPsych/jsPsych";
+
 export const exp1Words = [
     "叫喊",
     "转身离去",
@@ -28,6 +30,24 @@ export const exp1Dims = [
     "悲伤"
 ];
 
+export const exp2TimeVars = (function () {
+    const res: Array<{ face: string, bgs: Array<string> }> = [];
+    ["f", "m"].forEach(i1 => {
+        [1, 2, 3, 4, 5, 6, 7, 8].forEach(i2 => {
+            const emotions = ["happy", "fear", "angry", "sad"];
+            ["happy"].forEach(i3 => {
+                emotions.splice(emotions.indexOf(i3), 1);
+                emotions.forEach(i4 => {
+                    res.push({
+                        face: `${i3}-${i1}${i2}`,
+                        bgs: JsPsych.plugin.random.shuffle([`b_${i3}`, `b_${i4}`])
+                    });
+                });
+            });
+        });
+    });
+    return res;
+})();
 
 
 

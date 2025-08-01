@@ -58,6 +58,8 @@ export class Timeline extends TimelineNode {
             // 当前时间线没运行
             return 0;
         }
+
+        if (this.childNodes[this.cursor_node] instanceof Timeline) this.childNodes[this.cursor_node].reset();
         this.childNodes[this.cursor_node].run();
     }
     next() {
@@ -87,13 +89,15 @@ export class Timeline extends TimelineNode {
             this.cursor_node = 0;
             this.cursor_variable += 1;
             this.resetChild();
-            if (this.cursor_variable && this.cursor_variable % this.timeline_variables.length === 0) {
+            if ((this.cursor_variable && this.cursor_variable % this.timeline_variables.length === 0) || (this.description.trial_num && this.cursor_variable >= this.description.trial_num)) {
                 // 变量循环完毕
                 this.cursor_variable = 0;
                 this.cursor_repetition += 1;
                 if (this.cursor_repetition >= repetitions) {
+                    const r = this.cursor_repetition;
                     if (loop_function && loop_function(new DataCollection(this.getResults()))) {
                         this.reset();
+                        this.cursor_repetition = r;
                         this.cursor_node = 0;
                         return 0;
                     }
