@@ -10,6 +10,8 @@ import { exp1Dims, exp1Words, save_csv } from './config';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import Instruct_all from './component/exp1/Instruct_all.vue';
 import Survey from '@/utils/jsPsych/plugin/Survey.vue';
+import { save_s3 } from '@/utils/dataSaver/s3';
+import { ElMessage } from 'element-plus';
 
 JsPsych.opts = {
     ...JsPsych.opts,
@@ -32,13 +34,22 @@ timeline.push({
     })
 });
 
+const paths: Array<string> = [];
 timeline.push({
     component: h(Survey, {
         ques: [
-            { name: "pid", type: "text", title: "被试编号", placeholder: "请输入您所分配的被试编号", valid: [{ required: true }] },
-            { name: "gender", type: "radio", title: "您的性别", choices: ["男", "女"] },
+            { name: "name", type: "text", title: "您的姓名", placeholder: "请输入您的姓名", valid: [{ required: true }] },
+            { name: "gender", type: "radio", title: "您的性别", choices: ["男", "女"], valid: [{ required: true }] },
+            { name: "idcard", type: "text", title: "身份证后六位", placeholder: "请输入您的身份证后六位", valid: [{ required: true }] },
+            { name: "birth", type: "date", title: "请选择您的出生年月日", valid: [{ required: true }] },
         ]
-    })
+    }),
+    on_finish(data) {
+        paths.push(`${JsPsych.instance.currTime}`);
+        paths.push(data.name);
+        paths.push(data.gender);
+        paths.push(data.idcard);
+    }
 });
 
 timeline.push({
@@ -94,7 +105,22 @@ timeline.push({
     }),
     on_load() {
         JsPsych.plugin.window.destoryListener();
-        save_csv(jspsych.data.get().csv(), "experiment1_data");
+        save_s3({
+            csv: jspsych.data.get().csv(),
+            accessKey: "5tX6L87S3cWnxUaT2ODu",
+            secretKey: "vILiDmpXB6u7fZNUsTeM9xclHjVGAK5oOrPCzbtq",
+            bucket: "psydata",
+            endpoint: "http://n1.jimoco.cn:29513/oss",
+            region: "cn",
+            fileName: `lab-cas-23/exp1/${paths.join("_")}.csv`
+        })
+        .then(() => {
+            ElMessage.success("数据上传完成");
+        })
+        .catch(() => {
+            ElMessage.error("数据上传失败");
+            save_csv(jspsych.data.get().csv(), "experiment1_data");
+        });
     }
 });
 

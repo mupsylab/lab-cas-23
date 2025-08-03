@@ -7,6 +7,9 @@ import Preload from '@/utils/jsPsych/plugin/Preload.vue';
 import HtmlKeyboard from '@/utils/jsPsych/plugin/HtmlKeyboard.vue';
 import Survey from '@/utils/jsPsych/plugin/Survey.vue';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
+import { save_s3 } from '@/utils/dataSaver/s3';
+import { ElMessage } from 'element-plus';
+import { save_csv } from './config';
 
 JsPsych.opts = {
     ...JsPsych.opts,
@@ -85,6 +88,22 @@ timeline.push({
     }),
     on_load() {
         JsPsych.plugin.window.destoryListener();
+        save_s3({
+            csv: jspsych.data.get().csv(),
+            accessKey: "5tX6L87S3cWnxUaT2ODu",
+            secretKey: "vILiDmpXB6u7fZNUsTeM9xclHjVGAK5oOrPCzbtq",
+            bucket: "psydata",
+            endpoint: "http://n1.jimoco.cn:29513/oss",
+            region: "cn",
+            fileName: `lab-cas-23/test.csv`
+        })
+        .then(() => {
+            ElMessage.success("数据上传完成");
+        })
+        .catch(() => {
+            ElMessage.error("数据上传失败");
+            save_csv(jspsych.data.get().csv(), "experiment1_data");
+        });
     }
 });
 
