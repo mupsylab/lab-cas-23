@@ -6,12 +6,11 @@ import { TimelineArray } from '../../utils/jsPsych/timeline';
 import Preload from '@/utils/jsPsych/plugin/Preload.vue';
 import HtmlKeyboard from '@/utils/jsPsych/plugin/HtmlKeyboard.vue';
 import SliderChoose from './component/exp1/SliderChoose.vue';
-import { exp1Dims, exp1Words, partInfo, save_csv } from './config';
+import { exp1Dims, exp1Words, partInfo } from './config';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import Instruct_all from './component/exp1/Instruct_all.vue';
 import Survey from '@/utils/jsPsych/plugin/Survey.vue';
-import { save_s3 } from '@/utils/dataSaver/s3';
-import { ElMessage } from 'element-plus';
+import EndExp from './component/endExp.vue';
 
 JsPsych.opts = {
     ...JsPsych.opts,
@@ -92,15 +91,8 @@ timeline.push({
 })
 
 timeline.push({
-    component: h(HtmlKeyboard, {
-        stimulus: `
-<div style="font-size: 48px; line-height: 96px;">实验结束</div>
-<div style="font-size: 24px; color: var(--font-desc);">&copy; Mupsy 技术支持</div>`,
-        choices: ["NO_KEYS"]
-    }),
-    on_load() {
-        save_s3({
-            csv: jspsych.data.get().csv(),
+    component: h(EndExp, {
+        s3: {
             accessKey: "5tX6L87S3cWnxUaT2ODu",
             secretKey: "vILiDmpXB6u7fZNUsTeM9xclHjVGAK5oOrPCzbtq",
             bucket: "psydata",
@@ -108,17 +100,8 @@ timeline.push({
             signEndpoint: "http://n1.jimoco.cn:29513",
             region: "cn",
             fileName: `lab-cas-23/exp1/${paths.join("_")}.csv`
-        })
-        .then(() => {
-            ElMessage.success("数据上传完成");
-            JsPsych.plugin.window.destoryListener();
-        })
-        .catch(() => {
-            ElMessage.error("数据上传失败");
-            save_csv(jspsych.data.get().csv(), "experiment1_data");
-            JsPsych.plugin.window.destoryListener();
-        });
-    }
+        }
+    })
 });
 
 onMounted(() => {
