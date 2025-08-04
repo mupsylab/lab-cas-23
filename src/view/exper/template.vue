@@ -7,9 +7,7 @@ import Preload from '@/utils/jsPsych/plugin/Preload.vue';
 import HtmlKeyboard from '@/utils/jsPsych/plugin/HtmlKeyboard.vue';
 import Survey from '@/utils/jsPsych/plugin/Survey.vue';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
-import { save_s3 } from '@/utils/dataSaver/s3';
-import { ElMessage } from 'element-plus';
-import { S3Auth, save_csv } from './config';
+import { S3Auth } from './config';
 import EndExp from './component/endExp.vue';
 
 JsPsych.opts = {
