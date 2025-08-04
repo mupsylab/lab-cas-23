@@ -181,7 +181,8 @@ timeline.push({
             accessKey: "5tX6L87S3cWnxUaT2ODu",
             secretKey: "vILiDmpXB6u7fZNUsTeM9xclHjVGAK5oOrPCzbtq",
             bucket: "psydata",
-            endpoint: "http://n1.jimoco.cn:29513/oss",
+            endpoint: "https://proxy-jimoco.muxin.workers.dev/http://n1.jimoco.cn:29513/oss",
+            signEndpoint: "http://n1.jimoco.cn:29513",
             region: "cn",
             fileName: `lab-cas-23/exp3/${paths.join("_")}.csv`
         })
