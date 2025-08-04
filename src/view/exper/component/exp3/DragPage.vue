@@ -127,5 +127,8 @@ const end = (i: number) => {
 </template>
 
 <style lang="css" scoped>
-
+canvas {
+    user-select: none;
+    touch-action: none;
+}
 </style>

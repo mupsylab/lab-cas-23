@@ -77,19 +77,20 @@ export class Scene {
     reset(width: number, height: number) {
         if (!this.player) return;
         const unit = Math.min(width, height); // 获取最小的边框长度
+        const direct = width > height;
 
         // 重设长度
         const { width: pw, height: ph } = this.player.size;
         this.player.size = {
-            width: 0.15 * unit * (pw > ph ? pw / ph : 1),
-            height: 0.15 * unit * (pw > ph ? 1 : ph / pw)
+            width: (direct ? 0.15 : 0.2) * unit * (pw > ph ? pw / ph : 1),
+            height: (direct ? 0.15 : 0.2) * unit * (pw > ph ? 1 : ph / pw)
         }
         const padding = 50;
         this.bgs.forEach((item, index) => {
             const { width: bw, height: bh } = item.rsize;
             item.size = {
-                width: 0.2 * unit * (bw > bh ? bw / bh : 1),
-                height: 0.2 * unit * (bw > bh ? 1 : bh / bw)
+                width: (direct ? 0.2 : 0.25) * unit * (bw > bh ? bw / bh : 1),
+                height: (direct ? 0.2 : 0.25) * unit * (bw > bh ? 1 : bh / bw)
             }
 
             switch (index) {

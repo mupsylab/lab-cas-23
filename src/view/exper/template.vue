@@ -78,7 +78,6 @@ timeline.push({
         { currId: "2" }
     ]
 });
-
 timeline.push({
     component: h(HtmlKeyboard, {
         stimulus: `
@@ -87,22 +86,24 @@ timeline.push({
         choices: ["NO_KEYS"]
     }),
     on_load() {
-        JsPsych.plugin.window.destoryListener();
         save_s3({
             csv: jspsych.data.get().csv(),
             accessKey: "5tX6L87S3cWnxUaT2ODu",
             secretKey: "vILiDmpXB6u7fZNUsTeM9xclHjVGAK5oOrPCzbtq",
             bucket: "psydata",
-            endpoint: "http://n1.jimoco.cn:29513/oss",
+            endpoint: "https://psy.mupsycho.com/http://n1.jimoco.cn:29513/oss",
+            signEndpoint: "http://n1.jimoco.cn:29513",
             region: "cn",
-            fileName: `lab-cas-23/test.csv`
+            fileName: `lab-cas-23/template/test.csv`
         })
         .then(() => {
             ElMessage.success("数据上传完成");
+            JsPsych.plugin.window.destoryListener();
         })
         .catch(() => {
             ElMessage.error("数据上传失败");
             save_csv(jspsych.data.get().csv(), "experiment1_data");
+            JsPsych.plugin.window.destoryListener();
         });
     }
 });

@@ -90,6 +90,7 @@ const drag = (e: PointerEvent) => {
         offsetX,
         offsetY
     ];
+    console.log(type, e);
 
     const time = JsPsych.instance.currTime;
     switch (type) {
@@ -132,5 +133,8 @@ const end = (i: number) => {
 </template>
 
 <style lang="css" scoped>
-
+canvas {
+    user-select: none;
+    touch-action: none;
+}
 </style>
