@@ -1,5 +1,5 @@
 appId: net.mupsy.jsPsychTemplate
-productName: "jsPsych简易实验程序"
+productName: "jsPsych-cas23"
 icon: "public/assets/logo/logo_512_512.png"
 asar: true
 artifactName: "${productName}-${version}-${platform}-${arch}.${ext}"
