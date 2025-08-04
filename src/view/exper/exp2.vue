@@ -12,6 +12,11 @@ import Instruct_all from './component/exp2/Instruct_all.vue';
 import { ElMessage } from 'element-plus';
 import { exp2TimeVars, faceImgs, save_csv } from './config';
 import { save_s3 } from '@/utils/dataSaver/s3';
+import Instruct_detail from './component/exp2/Instruct_detail.vue';
+import { useLoaderAssets } from '@/store/loadAssetsToBlob';
+import Instruct_all_display from './component/exp2/Instruct_all_display.vue';
+import Instruct_prac from './component/exp2/Instruct_prac.vue';
+import Instruct_form from './component/exp2/Instruct_form.vue';
 
 JsPsych.opts = {
     ...JsPsych.opts,
@@ -21,17 +26,18 @@ JsPsych.opts = {
 }
 const jspsych = JsPsych.instance;
 const timeline: TimelineArray = [];
+const loader = useLoaderAssets();
 
 timeline.push({
     component: h(Preload, {
         assets: [
             ...faceImgs,
-            ["b_happy", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
-            ["b_sad", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
-            ["b_fear", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
-            ["b_angry", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
-            ["b_surprise", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
-            ["b_disgust", "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=423474926,1801248814&fm=179&app=35&f=PNG?w=518&h=136&s=ADFEEB16D210A1925C7BF2EA0300E03E"],
+            ["b_happy", "./assets/imgs/happy.png"],
+            ["b_sad", "./assets/imgs/sad.png"],
+            ["b_fear", "./assets/imgs/fear.png"],
+            ["b_angry", "./assets/imgs/angry.png"],
+            ["b_surprise", "./assets/imgs/surprise.png"],
+            ["b_disgust", "./assets/imgs/disgust.png"],
         ]
     })
 });
@@ -55,15 +61,50 @@ timeline.push({
 });
 
 timeline.push({
-    component: h(Instruction, {
-        pages: [Instruct_all]
-    })
+    component() {
+        return h(Instruction, {
+            pages: [
+                Instruct_all,
+                h(Instruct_detail, {
+                    img1: loader.getAssets("b_happy"),
+                    img2: loader.getAssets("h1-happy"),
+                    desc: "这个房子里的人正在一起吃冰淇淋，大家非常开心。",
+                }),
+                h(Instruct_detail, {
+                    img1: loader.getAssets("b_fear"),
+                    img2: loader.getAssets("h1-fear"),
+                    desc: "这个房子里的人看到窗外有一只狼，非常害怕。",
+                }),
+                h(Instruct_detail, {
+                    img1: loader.getAssets("b_sad"),
+                    img2: loader.getAssets("h1-sad"),
+                    desc: "这个房子里的人考试成绩不理想，感到很难过。",
+                }),
+                h(Instruct_detail, {
+                    img1: loader.getAssets("b_disgust"),
+                    img2: loader.getAssets("h1-disgust"),
+                    desc: "这个房子里的人看到变质的食物，感到非常厌恶。",
+                }),
+                h(Instruct_detail, {
+                    img1: loader.getAssets("b_angry"),
+                    img2: loader.getAssets("h1-angry"),
+                    desc: "这个房子里的人和同学发生了争吵，非常生气。",
+                }),
+                h(Instruct_detail, {
+                    img1: loader.getAssets("b_surprise"),
+                    img2: loader.getAssets("h1-surprise"),
+                    desc: "这个房子里的人听到了一声巨响，感到非常惊讶。",
+                }),
+                Instruct_all_display
+            ]
+        })
+    }
 });
 
 timeline.push({
     timeline: [{
         component: h(Instruction, {
-            pages: [h("p", "接下来开始练习")]
+            pages: [Instruct_prac]
         })
     }, {
         timeline: [{
@@ -87,13 +128,23 @@ timeline.push({
                 const correct = c_picture.split("-")[1] === response.split("_")[1];
                 data.correct = correct ? 1 : 0;
             }
+        }, {
+            component() {
+                const { correct } = jspsych.data.get().last(1).values()[0] as { correct: number };
+                return h(HtmlKeyboard, {
+                    stimulus: correct == 1 ? "你选对了！" : "再想一想",
+                    stimulus_duration: 500,
+                    trial_duration_time: 1000,
+                })
+
+            }
         }],
         timeline_variables: exp2TimeVars,
         randomize_order: true,
-        trial_num: 10
+        trial_num: 6
     }],
     loop_function() {
-        const correct = jspsych.data.get().filter({ trial_type: "drag-core" }).last(10).select("correct").mean();
+        const correct = jspsych.data.get().filter({ trial_type: "drag-core" }).last(6).select("correct").mean();
         if (!correct || correct < 0.8) {
             ElMessage.error("正确率过低, 重新练习");
             return true;
@@ -104,7 +155,7 @@ timeline.push({
 
 timeline.push({
     component: h(Instruction, {
-        pages: [h("p", "接下来进入正式实验。")]
+        pages: [Instruct_form]
     })
 });
 timeline.push({
@@ -164,13 +215,13 @@ timeline.push({
             region: "cn",
             fileName: `lab-cas-23/exp2/${paths.join("_")}.csv`
         })
-        .then(() => {
-            ElMessage.success("数据上传完成");
-        })
-        .catch(() => {
-            ElMessage.error("数据上传失败");
-            save_csv(jspsych.data.get().csv(), "experiment2_data");
-        });
+            .then(() => {
+                ElMessage.success("数据上传完成");
+            })
+            .catch(() => {
+                ElMessage.error("数据上传失败");
+                save_csv(jspsych.data.get().csv(), "experiment2_data");
+            });
     }
 });
 

@@ -12,6 +12,8 @@ import Instruct_all from './component/exp3/Instruct_all.vue';
 import { exp3TimeVars, faceImgs, save_csv } from './config';
 import { ElMessage } from 'element-plus';
 import { save_s3 } from '@/utils/dataSaver/s3';
+import Instruct_prac from './component/exp3/Instruct_prac.vue';
+import Instruct_form from './component/exp3/Instruct_form.vue';
 
 JsPsych.opts = {
     ...JsPsych.opts,
@@ -57,7 +59,7 @@ timeline.push({
 timeline.push({
     timeline: [{
         component: h(Instruction, {
-            pages: [h("p", "接下来开始练习")]
+            pages: [Instruct_prac]
         })
     }, {
         timeline: [{
@@ -81,13 +83,23 @@ timeline.push({
                 const correct = c_picture.split("-")[1] === response.split("-")[1];
                 data.correct = correct ? 1 : 0;
             }
+        }, {
+            component() {
+                const { correct } = jspsych.data.get().last(1).values()[0] as { correct: number };
+                return h(HtmlKeyboard, {
+                    stimulus: correct == 1 ? "你选对了！" : "再想一想",
+                    stimulus_duration: 500,
+                    trial_duration_time: 1000,
+                })
+
+            }
         }],
         timeline_variables: exp3TimeVars,
         randomize_order: true,
-        trial_num: 10
+        trial_num: 6
     }],
     loop_function() {
-        const correct = jspsych.data.get().filter({ trial_type: "drag-core" }).last(10).select("correct").mean();
+        const correct = jspsych.data.get().filter({ trial_type: "drag-core" }).last(6).select("correct").mean();
         if (!correct || correct < 0.8) {
             ElMessage.error("正确率过低, 重新练习");
             return true;
@@ -98,7 +110,9 @@ timeline.push({
 
 timeline.push({
     component: h(Instruction, {
-        pages: [h("p", "接下来进入正式实验。")]
+        pages: [
+            Instruct_form
+        ]
     })
 });
 timeline.push({
