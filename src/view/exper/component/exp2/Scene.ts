@@ -81,15 +81,15 @@ export class Scene {
         // 重设长度
         const { width: pw, height: ph } = this.player.size;
         this.player.size = {
-            width: 0.1 * unit * (pw > ph ? pw / ph : 1),
-            height: 0.1 * unit * (pw > ph ? 1 : ph / pw)
+            width: 0.15 * unit * (pw > ph ? pw / ph : 1),
+            height: 0.15 * unit * (pw > ph ? 1 : ph / pw)
         }
         const padding = 50;
         this.bgs.forEach((item, index) => {
             const { width: bw, height: bh } = item.rsize;
             item.size = {
-                width: 0.08 * unit * (bw > bh ? bw / bh : 1),
-                height: 0.08 * unit * (bw > bh ? 1 : bh / bw)
+                width: 0.2 * unit * (bw > bh ? bw / bh : 1),
+                height: 0.2 * unit * (bw > bh ? 1 : bh / bw)
             }
 
             switch (index) {

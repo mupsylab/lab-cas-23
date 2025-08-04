@@ -14,12 +14,13 @@ import { ElMessage } from 'element-plus';
 import { save_s3 } from '@/utils/dataSaver/s3';
 import Instruct_prac from './component/exp3/Instruct_prac.vue';
 import Instruct_form from './component/exp3/Instruct_form.vue';
+import EnterFullScreen from '@/utils/jsPsych/plugin/EnterFullScreen.vue';
 
 JsPsych.opts = {
     ...JsPsych.opts,
     iti: 0,
     // forceDirection: "h",
-    toastClose: false
+    toastClose: true
 }
 const jspsych = JsPsych.instance;
 const timeline: TimelineArray = [];
@@ -29,6 +30,12 @@ timeline.push({
         assets: [
             ...faceImgs,
         ]
+    })
+});
+
+timeline.push({
+    component: h(EnterFullScreen, {
+        model: true
     })
 });
 
@@ -153,7 +160,11 @@ timeline.push({
     timeline_variables: exp3TimeVars,
     randomize_order: true
 });
-
+timeline.push({
+    component: h(EnterFullScreen, {
+        model: false
+    })
+});
 timeline.push({
     component: h(HtmlKeyboard, {
         stimulus: `

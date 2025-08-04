@@ -17,7 +17,7 @@ JsPsych.opts = {
     ...JsPsych.opts,
     iti: 0,
     // forceDirection: "h",
-    toastClose: false
+    toastClose: true
 }
 const jspsych = JsPsych.instance;
 const timeline: TimelineArray = [];

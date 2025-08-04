@@ -17,12 +17,13 @@ import { useLoaderAssets } from '@/store/loadAssetsToBlob';
 import Instruct_all_display from './component/exp2/Instruct_all_display.vue';
 import Instruct_prac from './component/exp2/Instruct_prac.vue';
 import Instruct_form from './component/exp2/Instruct_form.vue';
+import EnterFullScreen from '@/utils/jsPsych/plugin/EnterFullScreen.vue';
 
 JsPsych.opts = {
     ...JsPsych.opts,
     iti: 0,
     // forceDirection: "h",
-    toastClose: false
+    toastClose: true
 }
 const jspsych = JsPsych.instance;
 const timeline: TimelineArray = [];
@@ -42,64 +43,70 @@ timeline.push({
     })
 });
 
-const paths: Array<string> = [];
 timeline.push({
-    component: h(Survey, {
-        ques: [
-            { name: "name", type: "text", title: "您的姓名", placeholder: "请输入您的姓名", valid: [{ required: true }] },
-            { name: "gender", type: "radio", title: "您的性别", choices: ["男", "女"], valid: [{ required: true }] },
-            { name: "idcard", type: "text", title: "身份证后六位", placeholder: "请输入您的身份证后六位", valid: [{ required: true }] },
-            { name: "birth", type: "date", title: "请选择您的出生年月日", valid: [{ required: true }] },
-        ]
-    }),
-    on_finish(data) {
-        paths.push(`${JsPsych.instance.currTime}`);
-        paths.push(data.name);
-        paths.push(data.gender);
-        paths.push(data.idcard);
-    }
+    component: h(EnterFullScreen, {
+        model: true
+    })
 });
 
-timeline.push({
-    component() {
-        return h(Instruction, {
-            pages: [
-                Instruct_all,
-                h(Instruct_detail, {
-                    img1: loader.getAssets("b_happy"),
-                    img2: loader.getAssets("h1-happy"),
-                    desc: "这个房子里的人正在一起吃冰淇淋，大家非常开心。",
-                }),
-                h(Instruct_detail, {
-                    img1: loader.getAssets("b_fear"),
-                    img2: loader.getAssets("h1-fear"),
-                    desc: "这个房子里的人看到窗外有一只狼，非常害怕。",
-                }),
-                h(Instruct_detail, {
-                    img1: loader.getAssets("b_sad"),
-                    img2: loader.getAssets("h1-sad"),
-                    desc: "这个房子里的人考试成绩不理想，感到很难过。",
-                }),
-                h(Instruct_detail, {
-                    img1: loader.getAssets("b_disgust"),
-                    img2: loader.getAssets("h1-disgust"),
-                    desc: "这个房子里的人看到变质的食物，感到非常厌恶。",
-                }),
-                h(Instruct_detail, {
-                    img1: loader.getAssets("b_angry"),
-                    img2: loader.getAssets("h1-angry"),
-                    desc: "这个房子里的人和同学发生了争吵，非常生气。",
-                }),
-                h(Instruct_detail, {
-                    img1: loader.getAssets("b_surprise"),
-                    img2: loader.getAssets("h1-surprise"),
-                    desc: "这个房子里的人听到了一声巨响，感到非常惊讶。",
-                }),
-                Instruct_all_display
-            ]
-        })
-    }
-});
+const paths: Array<string> = [];
+// timeline.push({
+//     component: h(Survey, {
+//         ques: [
+//             { name: "name", type: "text", title: "您的姓名", placeholder: "请输入您的姓名", valid: [{ required: true }] },
+//             { name: "gender", type: "radio", title: "您的性别", choices: ["男", "女"], valid: [{ required: true }] },
+//             { name: "idcard", type: "text", title: "身份证后六位", placeholder: "请输入您的身份证后六位", valid: [{ required: true }] },
+//             { name: "birth", type: "date", title: "请选择您的出生年月日", valid: [{ required: true }] },
+//         ]
+//     }),
+//     on_finish(data) {
+//         paths.push(`${JsPsych.instance.currTime}`);
+//         paths.push(data.name);
+//         paths.push(data.gender);
+//         paths.push(data.idcard);
+//     }
+// });
+
+// timeline.push({
+//     component() {
+//         return h(Instruction, {
+//             pages: [
+//                 Instruct_all,
+//                 h(Instruct_detail, {
+//                     img1: loader.getAssets("b_happy"),
+//                     img2: loader.getAssets("h1-happy"),
+//                     desc: "这个房子里的人正在一起吃冰淇淋，大家非常开心。",
+//                 }),
+//                 h(Instruct_detail, {
+//                     img1: loader.getAssets("b_fear"),
+//                     img2: loader.getAssets("h1-fear"),
+//                     desc: "这个房子里的人看到窗外有一只狼，非常害怕。",
+//                 }),
+//                 h(Instruct_detail, {
+//                     img1: loader.getAssets("b_sad"),
+//                     img2: loader.getAssets("h1-sad"),
+//                     desc: "这个房子里的人考试成绩不理想，感到很难过。",
+//                 }),
+//                 h(Instruct_detail, {
+//                     img1: loader.getAssets("b_disgust"),
+//                     img2: loader.getAssets("h1-disgust"),
+//                     desc: "这个房子里的人看到变质的食物，感到非常厌恶。",
+//                 }),
+//                 h(Instruct_detail, {
+//                     img1: loader.getAssets("b_angry"),
+//                     img2: loader.getAssets("h1-angry"),
+//                     desc: "这个房子里的人和同学发生了争吵，非常生气。",
+//                 }),
+//                 h(Instruct_detail, {
+//                     img1: loader.getAssets("b_surprise"),
+//                     img2: loader.getAssets("h1-surprise"),
+//                     desc: "这个房子里的人听到了一声巨响，感到非常惊讶。",
+//                 }),
+//                 Instruct_all_display
+//             ]
+//         })
+//     }
+// });
 
 timeline.push({
     timeline: [{
@@ -196,7 +203,11 @@ timeline.push({
     timeline_variables: exp2TimeVars,
     randomize_order: true
 });
-
+timeline.push({
+    component: h(EnterFullScreen, {
+        model: false
+    })
+});
 timeline.push({
     component: h(HtmlKeyboard, {
         stimulus: `
