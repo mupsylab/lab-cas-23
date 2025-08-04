@@ -6,7 +6,7 @@ import { TimelineArray } from '../../utils/jsPsych/timeline';
 import Preload from '@/utils/jsPsych/plugin/Preload.vue';
 import HtmlKeyboard from '@/utils/jsPsych/plugin/HtmlKeyboard.vue';
 import SliderChoose from './component/exp1/SliderChoose.vue';
-import { exp1Dims, exp1Words, save_csv } from './config';
+import { exp1Dims, exp1Words, partInfo, save_csv } from './config';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import Instruct_all from './component/exp1/Instruct_all.vue';
 import Survey from '@/utils/jsPsych/plugin/Survey.vue';
@@ -37,14 +37,7 @@ timeline.push({
 const paths: Array<string> = [];
 timeline.push({
     component: h(Survey, {
-        ques: [
-            { name: "name", type: "text", title: "您的姓名", placeholder: "请输入您的姓名", valid: [{ required: true }] },
-            { name: "gender", type: "radio", title: "您的性别", choices: ["男", "女"], valid: [{ required: true }] },
-            { name: "c_name", type: "text", title: "您孩子的姓名", placeholder: "请输入您孩子的姓名" },
-            { name: "c_gender", type: "radio", title: "您孩子的性别（如果有）", choices: ["男", "女"] },
-            { name: "idcard", type: "text", title: "身份证后六位", placeholder: "请输入您的身份证后六位", valid: [{ required: true }] },
-            { name: "birth", type: "date", title: "请选择您的出生年月日", valid: [{ required: true }] },
-        ]
+        ques: partInfo as any
     }),
     on_finish(data) {
         paths.push(`${JsPsych.instance.currTime}`);

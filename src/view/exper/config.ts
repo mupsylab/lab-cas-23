@@ -1,5 +1,27 @@
 import { JsPsych } from "@/utils/jsPsych/jsPsych";
 
+export const partInfo = [
+    { name: "name", type: "text", title: "您的姓名", placeholder: "请输入您的姓名", valid: [{ required: true }] },
+    { name: "gender", type: "radio", title: "您的性别", choices: ["男", "女"], valid: [{ required: true }] },
+    { name: "c_name", type: "text", title: "您孩子的姓名", placeholder: "请输入您孩子的姓名" },
+    { name: "c_gender", type: "radio", title: "您孩子的性别（如果有）", choices: ["男", "女"] },
+    {
+        name: "idcard", type: "text", title: "身份证后六位", placeholder: "请输入您的身份证后六位", valid: [
+            { required: true },
+            {
+                validator: (_rule: any, value: string, callback: any) => {
+                    if (value.length !== 6 && /\d{6}/.test(value)) {
+                        callback(new Error("请输入正确的身份证后六位"));
+                    } else {
+                        callback();
+                    }
+                }, trigger: 'blur'
+            }
+        ]
+    },
+    { name: "birth", type: "date", title: "请选择您的出生年月日", valid: [{ required: true }] },
+];
+
 export const exp1Words = [
     "叫喊",
     "转身离去",
