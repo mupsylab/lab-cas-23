@@ -30,7 +30,11 @@ export class Scene {
         return !this.can_move;
     }
     get isReady() {
-        return this.bgs.length == this.bgs_len && this.player != null;
+        let o = true;
+        this.bgs.forEach(item => {
+            if (item === undefined) o = false;
+        });
+        return this.bgs.length == this.bgs_len && this.player != null && o;
     }
     constructor(bgs: Array<string>, player: string) {
         this.bgs_len = bgs.length;
