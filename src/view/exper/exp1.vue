@@ -6,7 +6,7 @@ import { TimelineArray } from '../../utils/jsPsych/timeline';
 import Preload from '@/utils/jsPsych/plugin/Preload.vue';
 import HtmlKeyboard from '@/utils/jsPsych/plugin/HtmlKeyboard.vue';
 import SliderChoose from './component/exp1/SliderChoose.vue';
-import { exp1Dims, exp1Words, partInfo } from './config';
+import { exp1Dims, exp1Words, partInfo, S3Auth } from './config';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import Instruct_all from './component/exp1/Instruct_all.vue';
 import Survey from '@/utils/jsPsych/plugin/Survey.vue';
@@ -93,8 +93,7 @@ timeline.push({
 timeline.push({
     component: h(EndExp, {
         s3: {
-            accessKey: "5tX6L87S3cWnxUaT2ODu",
-            secretKey: "vILiDmpXB6u7fZNUsTeM9xclHjVGAK5oOrPCzbtq",
+            ...S3Auth,
             bucket: "psydata",
             endpoint: "https://psy.mupsycho.com/http://n1.jimoco.cn:29513/oss",
             signEndpoint: "http://n1.jimoco.cn:29513",

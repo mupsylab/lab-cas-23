@@ -9,7 +9,8 @@ import Survey from '@/utils/jsPsych/plugin/Survey.vue';
 import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import { save_s3 } from '@/utils/dataSaver/s3';
 import { ElMessage } from 'element-plus';
-import { save_csv } from './config';
+import { S3Auth, save_csv } from './config';
+import EndExp from './component/endExp.vue';
 
 JsPsych.opts = {
     ...JsPsych.opts,
@@ -78,34 +79,18 @@ timeline.push({
         { currId: "2" }
     ]
 });
+
 timeline.push({
-    component: h(HtmlKeyboard, {
-        stimulus: `
-<div style="font-size: 48px; line-height: 96px;">实验结束</div>
-<div style="font-size: 24px; color: var(--font-desc);">&copy; Mupsy 技术支持</div>`,
-        choices: ["NO_KEYS"]
-    }),
-    on_load() {
-        save_s3({
-            csv: jspsych.data.get().csv(),
-            accessKey: "5tX6L87S3cWnxUaT2ODu",
-            secretKey: "vILiDmpXB6u7fZNUsTeM9xclHjVGAK5oOrPCzbtq",
+    component: h(EndExp, {
+        s3: {
+            ...S3Auth,
             bucket: "psydata",
             endpoint: "https://psy.mupsycho.com/http://n1.jimoco.cn:29513/oss",
             signEndpoint: "http://n1.jimoco.cn:29513",
             region: "cn",
             fileName: `lab-cas-23/template/test.csv`
-        })
-        .then(() => {
-            ElMessage.success("数据上传完成");
-            JsPsych.plugin.window.destoryListener();
-        })
-        .catch(() => {
-            ElMessage.error("数据上传失败");
-            save_csv(jspsych.data.get().csv(), "experiment1_data");
-            JsPsych.plugin.window.destoryListener();
-        });
-    }
+        }
+    })
 });
 
 onMounted(() => {

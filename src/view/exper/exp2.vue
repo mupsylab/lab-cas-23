@@ -10,7 +10,7 @@ import Instruction from '@/utils/jsPsych/plugin/Instruction.vue';
 import DragPage from './component/exp2/DragPage.vue';
 import Instruct_all from './component/exp2/Instruct_all.vue';
 import { ElMessage } from 'element-plus';
-import { exp2TimeVars, faceImgs, partInfo } from './config';
+import { exp2TimeVars, faceImgs, partInfo, S3Auth } from './config';
 import Instruct_detail from './component/exp2/Instruct_detail.vue';
 import { useLoaderAssets } from '@/store/loadAssetsToBlob';
 import Instruct_all_display from './component/exp2/Instruct_all_display.vue';
@@ -209,8 +209,7 @@ timeline.push({
 timeline.push({
     component: h(EndExp, {
         s3: {
-            accessKey: "5tX6L87S3cWnxUaT2ODu",
-            secretKey: "vILiDmpXB6u7fZNUsTeM9xclHjVGAK5oOrPCzbtq",
+            ...S3Auth,
             bucket: "psydata",
             endpoint: "https://psy.mupsycho.com/http://n1.jimoco.cn:29513/oss",
             signEndpoint: "http://n1.jimoco.cn:29513",

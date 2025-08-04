@@ -1,5 +1,10 @@
 import { JsPsych } from "@/utils/jsPsych/jsPsych";
 
+export const S3Auth = {
+    accessKey: "CVx5X2pqH8U8edrUCzlV",
+    secretKey: "sJIDFX5asll6PckUtlWlbatqTyxAKPsJM8fTHa4g"
+}
+
 export const partInfo = [
     { name: "name", type: "text", title: "您的姓名", placeholder: "请输入您的姓名", valid: [{ required: true }] },
     { name: "gender", type: "radio", title: "您的性别", choices: ["男", "女"], valid: [{ required: true }] },
@@ -159,7 +164,7 @@ export const exp3TimeVars = (function () {
                     if (f1 === f2) continue;
                     res.push({
                         face: `h${f1}-${e1}`,
-                        bgs: [`h${f2}-${e1}`, `h${f2}-${e2}`]
+                        bgs: JsPsych.plugin.random.shuffle([`h${f2}-${e1}`, `h${f2}-${e2}`])
                     });
                 }
             }
