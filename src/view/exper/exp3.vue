@@ -33,7 +33,7 @@ timeline.push({
     })
 });
 
-const paths: Array<string> = [];
+const paths: Array<string> = ["exp3"];
 timeline.push({
     component: h(Survey, {
         ques: partInfo as any
@@ -162,16 +162,18 @@ timeline.push({
 });
 
 timeline.push({
-    component: h(EndExp, {
-        s3: {
-            ...S3Auth,
-            bucket: "psydata",
-            endpoint: "https://psy.mupsycho.com/http://n1.jimoco.cn:29513/oss",
-            signEndpoint: "http://n1.jimoco.cn:29513",
-            region: "cn",
-            fileName: `lab-cas-23/exp3/${paths.join("_")}.csv`
-        }
-    })
+    component() {
+        return h(EndExp, {
+            s3: {
+                ...S3Auth,
+                bucket: "psydata",
+                endpoint: "https://psy.mupsycho.com/http://n1.jimoco.cn:29513/oss",
+                signEndpoint: "http://n1.jimoco.cn:29513",
+                region: "cn",
+                fileName: `lab-cas-23/exp3/${paths.join("_")}.csv`
+            }
+        })
+    }
 });
 
 onMounted(() => {
