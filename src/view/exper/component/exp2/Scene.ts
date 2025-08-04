@@ -30,17 +30,15 @@ export class Scene {
         return !this.can_move;
     }
     get isReady() {
-        let o = true;
-        this.bgs.forEach(item => {
-            if (item === undefined) o = false;
-        });
-        return this.bgs.length == this.bgs_len && this.player != null && o;
+        return this.bgs.length == this.bgs_len && this.player != null;
     }
     constructor(bgs: Array<string>, player: string) {
         this.bgs_len = bgs.length;
-        bgs.forEach((src, index) => {
-            const url = this.loader.getAssets(src);
-            this.loadImg(url).then((img) => {
+        const r = bgs.map(url => {
+            return this.loadImg(this.loader.getAssets(url));
+        });
+        Promise.all(r).then(res => {
+            res.forEach(item => {
                 const sprite = new ImgSprite({
                     size: {
                         width: 128,
@@ -51,8 +49,8 @@ export class Scene {
                         y: 0
                     }
                 });
-                sprite.instance = img;
-                this.bgs[index] = sprite;
+                sprite.instance = item;
+                this.bgs.push(sprite);
             });
         });
 
