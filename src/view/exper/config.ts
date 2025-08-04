@@ -98,7 +98,7 @@ export const faceImgs: Array<[string, string]> = [
 export const exp2TimeVars = (function () {
     const res: Array<{ face: string, bgs: Array<string> }> = [];
     ["h"].forEach(i1 => {
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(i2 => {
+        [1, 2].forEach(i2 => {
             ["happy", "sad", "fear", "angry", "surprise", "disgust"].forEach(i3 => {
                 const emotions = ["happy", "sad", "fear", "angry", "surprise", "disgust"];
                 emotions.splice(emotions.indexOf(i3), 1);
@@ -126,29 +126,19 @@ export const exp3TimeVars = (function () {
         const emotions = ["happy", "sad", "fear", "angry", "surprise", "disgust"];
         emotions.splice(emotions.indexOf(e1), 1);
         emotions.forEach(e2 => {
-            for (let f1 = 1; f1 <= 3; f1++) {
+            for (let f1 = 1; f1 <= 2; f1++) {
                 /**
                  * 拖动面孔特征序号
                  */
-                for (let f2 = 1; f2 <= 3; f2++) {
+                for (let f2 = 1; f2 <= 2; f2++) {
                     /**
                      * 固定面孔特征序号1
                      */
                     if (f1 === f2) continue;
-                    for (let f3 = 1; f3 <= 3; f3++) {
-                        /**
-                         * 固定面孔特征序号2
-                         */
-                        if (f2 === f3 || f1 === f3) continue;
-                        res.push({
-                            face: `h${f1}-${e1}`,
-                            bgs: [`h${f2}-${e1}`, `h${f3}-${e2}`]
-                        });
-                        res.push({
-                            face: `h${f1}-${e1}`,
-                            bgs: [`h${f2}-${e2}`, `h${f3}-${e1}`]
-                        });
-                    }
+                    res.push({
+                        face: `h${f1}-${e1}`,
+                        bgs: [`h${f2}-${e1}`, `h${f2}-${e2}`]
+                    });
                 }
             }
         });

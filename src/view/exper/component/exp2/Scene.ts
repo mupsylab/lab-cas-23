@@ -34,7 +34,7 @@ export class Scene {
     }
     constructor(bgs: Array<string>, player: string) {
         this.bgs_len = bgs.length;
-        bgs.forEach((src) => {
+        bgs.forEach((src, index) => {
             const url = this.loader.getAssets(src);
             this.loadImg(url).then((img) => {
                 const sprite = new ImgSprite({
@@ -48,7 +48,7 @@ export class Scene {
                     }
                 });
                 sprite.instance = img;
-                this.bgs.push(sprite);
+                this.bgs[index] = sprite;
             });
         });
 

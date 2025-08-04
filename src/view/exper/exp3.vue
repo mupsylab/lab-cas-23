@@ -33,12 +33,6 @@ timeline.push({
     })
 });
 
-timeline.push({
-    component: h(EnterFullScreen, {
-        model: true
-    })
-});
-
 const paths: Array<string> = [];
 timeline.push({
     component: h(Survey, {
@@ -58,7 +52,11 @@ timeline.push({
         paths.push(data.idcard);
     }
 });
-
+timeline.push({
+    component: h(EnterFullScreen, {
+        model: true
+    })
+});
 timeline.push({
     component: h(Instruction, {
         pages: [Instruct_all]
@@ -91,6 +89,7 @@ timeline.push({
                 const { c_picture, response } = data;
                 const correct = c_picture.split("-")[1] === response.split("-")[1];
                 data.correct = correct ? 1 : 0;
+                data.prac = 1;
             }
         }, {
             component() {
@@ -145,6 +144,7 @@ timeline.push({
             const { c_picture, response } = data;
             const correct = c_picture.split("-")[1] === response.split("-")[1];
             data.correct = correct ? 1 : 0;
+            data.prac = 0;
         }
     }, {
         timeline: [{
@@ -156,7 +156,7 @@ timeline.push({
             const trial_id = jspsych.data.get().last(1).values()[0].trial_id as string;
             const r = trial_id.split("-").map(s => s.split("."));
             const i = parseInt(r[1][2]) + 1;
-            return i % 60 == 0 && i > 0;
+            return i % 30 == 0 && i > 0;
         }
     }],
     timeline_variables: exp3TimeVars,
@@ -185,13 +185,13 @@ timeline.push({
             region: "cn",
             fileName: `lab-cas-23/exp3/${paths.join("_")}.csv`
         })
-        .then(() => {
-            ElMessage.success("数据上传完成");
-        })
-        .catch(() => {
-            ElMessage.error("数据上传失败");
-            save_csv(jspsych.data.get().csv(), "experiment3_data");
-        });
+            .then(() => {
+                ElMessage.success("数据上传完成");
+            })
+            .catch(() => {
+                ElMessage.error("数据上传失败");
+                save_csv(jspsych.data.get().csv(), "experiment3_data");
+            });
     }
 });
 
