@@ -15,10 +15,10 @@ export const partInfo = [
             { required: true },
             {
                 validator: (_rule: any, value: string, callback: any) => {
-                    if (value.length !== 6 && !(/^\d{5}[\dxX]$/.test(value))) {
-                        callback(new Error("请输入正确的身份证后六位"));
-                    } else {
+                    if (value.length == 6 && (/^\d{5}[\dxX]$/.test(value))) {
                         callback();
+                    } else {
+                        callback(new Error("请输入正确的身份证后六位"));
                     }
                 }, trigger: 'blur'
             }
