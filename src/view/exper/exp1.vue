@@ -96,7 +96,7 @@ timeline.push({
             s3: {
                 ...S3Auth,
                 bucket: "psydata",
-                endpoint: "https://psy.mupsycho.com/http://n1.jimoco.cn:29513/oss",
+                endpoint: "https://psy.mupsycho.com/oss",
                 signEndpoint: "http://n1.jimoco.cn:29513",
                 region: "cn",
                 fileName: `lab-cas-23/exp1/${paths.join("_")}.csv`
