@@ -46,7 +46,7 @@ timeline.push({
 const paths: Array<string> = ["exp2"];
 timeline.push({
     component: h(Survey, {
-        ques: partInfo as any
+        ques: partInfo
     }),
     on_finish(data) {
         paths.push(`${JsPsych.instance.currTime}`);

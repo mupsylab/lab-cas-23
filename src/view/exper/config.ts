@@ -1,3 +1,4 @@
+import { Ques } from "@/component/questionnaire/Questionnaire";
 import { JsPsych } from "@/utils/jsPsych/jsPsych";
 
 export const S3Auth = {
@@ -5,11 +6,11 @@ export const S3Auth = {
     secretKey: "sJIDFX5asll6PckUtlWlbatqTyxAKPsJM8fTHa4g"
 }
 
-export const partInfo = [
-    { name: "name", type: "text", title: "您的姓名", placeholder: "请输入您的姓名", valid: [{ required: true }] },
-    { name: "gender", type: "radio", title: "您的性别", choices: ["男", "女"], valid: [{ required: true }] },
-    { name: "c_name", type: "text", title: "您孩子的姓名", placeholder: "请输入您孩子的姓名" },
-    { name: "c_gender", type: "radio", title: "您孩子的性别（如果有）", choices: ["男", "女"] },
+export const partInfo: Array<Ques> = [
+    { name: "desc", type: "desc", desc: "<h2>一、孩子信息</h2>" },
+    { name: "name", type: "text", title: "姓名", placeholder: "请输入您孩子的姓名", valid: [{ required: true }] },
+    { name: "gender", type: "radio", title: "性别", choices: ["男", "女"], valid: [{ required: true }] },
+    { name: "birth", type: "date", title: "出生日期", valid: [{ required: true }] },
     {
         name: "idcard", type: "text", title: "身份证后六位", placeholder: "请输入您的身份证后六位", valid: [
             { required: true },
@@ -24,7 +25,10 @@ export const partInfo = [
             }
         ]
     },
-    { name: "birth", type: "date", title: "请选择您的出生年月日", valid: [{ required: true }] },
+    { name: "desc", type: "desc", desc: "<h2>二、家长信息（选填）</h2>" },
+    { name: "p_name", type: "text", title: "您的姓名", placeholder: "请输入您的姓名" },
+    { name: "p_gender", type: "radio", title: "您的性别", choices: ["男", "女"] },
+    { name: "p_birth", type: "date", title: "请选择您的出生年月日" },
 ];
 
 export const exp1Words = [
