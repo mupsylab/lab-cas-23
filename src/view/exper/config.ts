@@ -178,16 +178,17 @@ export const exp3TimeVars = (function () {
 })();
 
 export const exp4TimeVars = [
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 },
-    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 6 }
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
+    { imgs: ["h1-happy", "h1-angry"], seq: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], detection: 1 },
 ];
 
 export function save_csv(data: string, filename: string) {
