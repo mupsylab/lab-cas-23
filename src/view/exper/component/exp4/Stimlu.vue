@@ -90,9 +90,10 @@ function frame() {
         return;
     } // 刺激呈现完毕, 结束
 
-    const currImg = imgs[props.seq[currId]];
-    const width = currImg.width * 0.6;
-    const height = currImg.height * 0.6;
+    const index = props.seq[currId];
+    const currImg = imgs[Math.abs(index)];
+    const width = currImg.width * 0.1;
+    const height = currImg.height * 0.1;
 
     ctx.fillStyle = calcColor();
     ctx.rect(
@@ -108,9 +109,30 @@ function frame() {
         (dom.value.height - height) / 2,
         width, height
     );
+    // 黑白图
+    const imgdata = ctx.getImageData(
+        (dom.value.width - width) / 2,
+        (dom.value.height - height) / 2,
+        width, height
+    );
+
+    if (index < 0) {
+        const t_id: Array<number> = [];
+        imgdata.data.forEach((_, i) => {
+            if (i % 4 == 0) {
+                const average = Math.round((imgdata.data[i] + imgdata.data[i + 1] + imgdata.data[i + 2]) / 3);
+                t_id[i] = t_id[i + 1] = t_id[i + 2] = average;
+                t_id[i + 3] = 255; // alpha
+            }
+        });
+        const new_imagdata = ctx.createImageData(imgdata.width, imgdata.height);
+        new_imagdata.data.set(t_id);
+        ctx.putImageData(new_imagdata, (dom.value.width - width) / 2, (dom.value.height - height) / 2);
+    }
+
     ctx.rect(
         (dom.value.width - width) / 2,
-        (dom.value.height - height) / 2 + height - 30,
+        (dom.value.height - height) / 2 + height,
         width, 30
     );
     ctx.fill();
@@ -159,6 +181,4 @@ function handleKey(e: KeyboardEvent, t: number) {
     <canvas ref="dom"></canvas>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -82,11 +82,12 @@ timeline.push({
                 });
             },
             on_finish(data) {
-                const { imgs, seq, detection } = jspsych.currTrial.parent.getAllTimelineVariables();
+                const { imgs, seq, detection, rsvp_iti } = jspsych.currTrial.parent.getAllTimelineVariables();
                 const { resp_index } = data;
                 data.cond_imgs = imgs;
                 data.cond_seq = seq;
                 data.cond_detection = detection;
+                data.cond_iti = rsvp_iti;
                 data.correct = resp_index >= detection ? 1 : 0;
                 data.prac = 1;
             }
