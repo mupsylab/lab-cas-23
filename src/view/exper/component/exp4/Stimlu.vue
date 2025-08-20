@@ -72,14 +72,18 @@ const props = defineProps({
 const imgs: Array<HTMLImageElement> = [];
 let continue_f = true;
 let count = 0; // 计数
+let scale = Math.random() * 0.3 + 0.85; // 缩放系数
 function frame() {
     const ctx = dom.value.getContext("2d");
     if (!ctx) return;
 
     ctx.clearRect(0, 0, dom.value.width, dom.value.height);
+    ctx.save();
+    ctx.beginPath();
 
     const currId = Math.floor(count / opts.loop); // loop帧为一轮
     if (count % opts.loop >= opts.loop - opts.rest) {
+        scale = Math.random() * 0.3 + 0.85;
         count += 1;
         if (continue_f) window.requestAnimationFrame(frame);
         return;
@@ -92,31 +96,34 @@ function frame() {
 
     const index = props.seq[currId];
     const currImg = imgs[Math.abs(index)];
-    const width = currImg.width * 0.1;
-    const height = currImg.height * 0.1;
+    const width = Math.floor(currImg.width * 0.1 * scale);
+    const height = Math.floor(currImg.height * 0.1 * scale);
+
+    const dx = Math.floor((dom.value.width - width) / 2);
+    const dy = Math.floor((dom.value.height - height) / 2);
+    const bar = Math.floor(30 * scale);
 
     ctx.fillStyle = calcColor();
     ctx.rect(
-        (dom.value.width - width) / 2,
-        (dom.value.height - height) / 2 - 30,
-        width, 30
+        dx, dy - bar,
+        width, bar * 2 + height
     );
     ctx.fill();
+
     ctx.drawImage(
         currImg,
         0, 0, currImg.width, currImg.height,
-        (dom.value.width - width) / 2,
-        (dom.value.height - height) / 2,
-        width, height
-    );
-    // 黑白图
-    const imgdata = ctx.getImageData(
-        (dom.value.width - width) / 2,
-        (dom.value.height - height) / 2,
+        dx, dy,
         width, height
     );
 
     if (index < 0) {
+        // 黑白图
+        const imgdata = ctx.getImageData(
+            dx, dy,
+            width, height
+        );
+
         const t_id: Array<number> = [];
         imgdata.data.forEach((_, i) => {
             if (i % 4 == 0) {
@@ -130,12 +137,7 @@ function frame() {
         ctx.putImageData(new_imagdata, (dom.value.width - width) / 2, (dom.value.height - height) / 2);
     }
 
-    ctx.rect(
-        (dom.value.width - width) / 2,
-        (dom.value.height - height) / 2 + height,
-        width, 30
-    );
-    ctx.fill();
+    ctx.restore();
 
     count += 1;
     if (continue_f) window.requestAnimationFrame(frame);
