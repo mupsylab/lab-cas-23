@@ -141,14 +141,14 @@ export const exp4TimeVars = (function () {
         seq: Array<number>,
         detection: number,
         rsvp_iti: number
-    }> = [];
+    }> = [];    
     ["h1", "h2"].forEach(face => {
         ["happy", "sad", "fear", "angry", "surprise", "disgust"].forEach(e1 => {
             const emotions = ["happy", "sad", "fear", "angry", "surprise", "disgust"];
             emotions.splice(emotions.indexOf(e1), 1);
             emotions.forEach(e2 => {
-                [4, 5, 6, 7, 8].forEach(i1 => {
-                    [2, 3, 4].forEach(i2 => {
+                [6].forEach(i1 => {
+                    [2, 3, 5].forEach(i2 => {
                         const seq: Array<number> = [];
                         for (let i = 0; i < 12; i++) {
                             if (i + 1 == i1) seq.push(0)
@@ -166,6 +166,7 @@ export const exp4TimeVars = (function () {
             });
         });
     });
+    console.log(res);
     return res;
 })();
 

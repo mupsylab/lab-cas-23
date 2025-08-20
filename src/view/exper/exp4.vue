@@ -35,7 +35,7 @@ timeline.push({
     })
 });
 
-const paths: Array<string> = ["exp3"];
+const paths: Array<string> = ["exp4"];
 timeline.push({
     component: h(Survey, {
         ques: partInfo
@@ -160,7 +160,7 @@ timeline.push({
             const trial_id = jspsych.data.get().last(1).values()[0].trial_id as string;
             const r = trial_id.split("-").map(s => s.split("."));
             const i = parseInt(r[1][2]) + 1;
-            return i % 30 == 0 && i > 0;
+            return i % 60 == 0 && i > 0;
         }
     }],
     timeline_variables: exp4TimeVars,
