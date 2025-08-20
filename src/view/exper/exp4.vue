@@ -164,7 +164,8 @@ timeline.push({
         }
     }],
     timeline_variables: exp4TimeVars,
-    randomize_order: true
+    randomize_order: true,
+    repetitions: 2
 });
 timeline.push({
     component: h(EnterFullScreen, {

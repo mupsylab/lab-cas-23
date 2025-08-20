@@ -147,8 +147,8 @@ export const exp4TimeVars = (function () {
             const emotions = ["happy", "sad", "fear", "angry", "surprise", "disgust"];
             emotions.splice(emotions.indexOf(e1), 1);
             emotions.forEach(e2 => {
-                [6].forEach(i1 => {
-                    [2, 3, 5].forEach(i2 => {
+                [5, 6, 7].forEach(i1 => {
+                    [1].forEach(i2 => {
                         const seq: Array<number> = [];
                         for (let i = 0; i < 12; i++) {
                             if (i + 1 == i1) seq.push(0)
