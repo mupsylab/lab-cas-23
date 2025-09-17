@@ -1,19 +1,8 @@
 <script setup lang="ts">
-import { save_s3 } from '@/utils/dataSaver/s3';
 import { JsPsych } from '@/utils/jsPsych/jsPsych';
-import { ElMessage } from 'element-plus';
 import { onMounted, ref } from 'vue';
-import { save_csv } from '../config';
+import { S3Opts, save_data } from '@/utils/dataSaver';
 
-type S3Opts = {
-    accessKey: string,
-    secretKey: string,
-    bucket: string,
-    endpoint: string,
-    signEndpoint?: string,
-    region: string,
-    fileName: string
-}
 const props = defineProps<{
     s3: S3Opts;
 }>();
@@ -21,21 +10,12 @@ const props = defineProps<{
 const state = ref(0);
 onMounted(() => {
     const data = JsPsych.instance.data.get();
-    save_s3({
-        ...props.s3,
-        csv: data.csv()
-    })
+    save_data(data.csv(), props.s3)
         .then(() => {
-            ElMessage.success("数据上传完成");
-            state.value = 1;
-            JsPsych.plugin.window.destoryListener();
+            state.value = 1
         })
         .catch(() => {
-            ElMessage.error("数据上传失败");
-            const p = props.s3.fileName.split("/");
-            save_csv(data.csv(), p[p.length - 1]);
-            state.value = -1;
-            JsPsych.plugin.window.destoryListener();
+            state.value = -1
         });
 });
 </script>
