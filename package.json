@@ -8,6 +8,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vue-tsc -b && vite build && tsc src/electron-main.ts",
     "build:s3": "vue-tsc -b && vite build --mode s3 && tsc src/electron-main.ts",
+    "build:naodao": "vue-tsc -b && vite build --mode naodao && tsc src/electron-main.ts",
     "preview": "vite preview",
     "pack": "npm run build && electron-builder --config",
     "pack:win": "npm run build && electron-builder --win --config",

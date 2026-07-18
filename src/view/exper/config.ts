@@ -2,8 +2,8 @@ import { Ques } from "@/component/questionnaire/Questionnaire";
 import { JsPsych } from "@/utils/jsPsych/jsPsych";
 
 export const S3Auth = {
-    accessKey: "CVx5X2pqH8U8edrUCzlV",
-    secretKey: "sJIDFX5asll6PckUtlWlbatqTyxAKPsJM8fTHa4g"
+    accessKey: "BoIrgtgQh4M2AnItiDPt",
+    secretKey: "RFgMhjucu40uXMFFAXaIiUHHK3VuSpHwDe8GYLOB"
 }
 
 export const partInfo: Array<Ques> = [
